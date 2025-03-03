@@ -19,3 +19,8 @@ subprojects {
 tasks.register<Delete>("clean") {
     delete(rootProject.layout.buildDirectory)
 }
+plugins {
+    // Apply the Google services plugin
+    id("com.android.application") version "7.3.0" apply false
+    id("com.google.gms.google-services") version "4.4.2" apply false
+}
