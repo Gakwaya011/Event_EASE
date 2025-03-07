@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'pages/dashboard.dart'; 
 import 'pages/singl_event.dart';
+import 'pages/create_event.dart';
 
 void main() {
   runApp(const MyApp());
@@ -14,7 +15,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'EventEase',
-      home: SinglEvent(),
+      home: CreateEventPage(),
     );
   }
 }
