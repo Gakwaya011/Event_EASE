@@ -15,7 +15,12 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'EventEase',
-      home: CreateEventPage(),
+      initialRoute: '/', // Set the initial route
+      routes: {
+        '/': (context) => EventPlannerHome(),
+        '/event': (context) => SinglEvent(),
+        '/create': (context) => CreateEventPage(),
+      },
     );
   }
 }

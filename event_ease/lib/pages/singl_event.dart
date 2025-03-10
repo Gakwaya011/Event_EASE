@@ -10,15 +10,9 @@ class SinglEvent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        primarySwatch: Colors.amber,
-        fontFamily: 'Roboto',
-      ),
-      home: EventDetailsPage(
+    return EventDetailsPage(
         event: EventModel(
-          title: "Kamila's Birthday Bash",
+          title: "Kamila's Birthday",
           date: DateTime(2024, 6, 15),
           time: TimeOfDay(hour: 19, minute: 00),
           location: "Sunset Ballroom, 123 Party Street",
@@ -37,8 +31,7 @@ class SinglEvent extends StatelessWidget {
             GuestModel(name: "Mike Johnson", status: GuestStatus.declined),
           ],
         ),
-      ),
-    );
+      );
   }
 }
 

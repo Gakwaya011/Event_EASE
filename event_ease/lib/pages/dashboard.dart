@@ -28,9 +28,7 @@ class _EventPlannerHomeState extends State<EventPlannerHome> {
   }
   
   void _onCardTap(String title) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('$title selected')),
-    );
+    Navigator.pushNamed(context, '/event');
   }
 
   @override
@@ -365,9 +363,7 @@ class _EventPlannerHomeState extends State<EventPlannerHome> {
         const SizedBox(height: 12),
         InkWell(
           onTap: () {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Create new event tapped')),
-            );
+            Navigator.pushNamed(context, '/create');
           },
           borderRadius: BorderRadius.circular(12),
           child: Container(
