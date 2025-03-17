@@ -18,11 +18,10 @@ class MyApp extends StatelessWidget {
       title: 'EventEase',
       initialRoute: '/', // Set the initial route
       routes: {
-        // '/': (context) => EventPlannerHome(),
-        '/': (context) => OnboardingScreen(),
+        '/': (context) => EventPlannerHome(),
         '/event': (context) => SinglEvent(),
         '/create': (context) => CreateEventPage(),
-        '/dashboard': (context) => OnboardingScreen(),
+        '/onboarding': (context) => OnboardingScreen(),
       },
     );
   }
