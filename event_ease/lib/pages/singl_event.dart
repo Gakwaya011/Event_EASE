@@ -6,7 +6,7 @@ void main() {
 }
 
 class SinglEvent extends StatelessWidget {
-  const SinglEvent({Key? key}) : super(key: key);
+  const SinglEvent({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -78,7 +78,7 @@ class EventModel {
 class EventDetailsPage extends StatefulWidget {
   final EventModel event;
 
-  const EventDetailsPage({Key? key, required this.event}) : super(key: key);
+  const EventDetailsPage({super.key, required this.event});
 
   @override
   _EventDetailsPageState createState() => _EventDetailsPageState();

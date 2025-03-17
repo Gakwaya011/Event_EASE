@@ -510,7 +510,7 @@ class _EventPlannerHomeState extends State<EventPlannerHome> {
               ),
               textAlign: TextAlign.center,
               maxLines: 2,
-              overflow: TextOverflow.ellipsis,
+              overflow: TextOverflow.clip,
             ),
           ],
         ),
