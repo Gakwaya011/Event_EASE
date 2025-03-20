@@ -1,19 +1,13 @@
+import 'package:event_ease/pages/special_event.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'core/navigation/router.dart';
-// import 'firebase_options.dart';
+import 'pages/special_event.dart';
+import 'package:event_ease/pages/profile.dart';
+import 'package:event_ease/pages/splash.dart';
+//import 'pages/singl_event.dart';
+//import 'pages/create_event.dart';
+//import 'pages/onboarding.dart';
 
-
-
-Future<void> main() async {
-  
-
-WidgetsFlutterBinding.ensureInitialized();
-
-  if (Firebase.apps.isEmpty) {
-    await Firebase.initializeApp();
-  }
-
+void main() {
   runApp(const MyApp());
 }
 
@@ -22,9 +16,17 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp.router(
+    return MaterialApp(
       debugShowCheckedModeBanner: false,
-      routerConfig: router, // Use the router we defined
+      title: 'EventEase',
+      initialRoute: '/splash', // Set the initial route
+      routes: {
+        // '/': (context) => SpecialEvent(),
+        // '/profile': (context) => ProfilePage(),
+        '/splash': (context) => SplashPage(),
+        // '/create': (context) => CreateEventPage(),
+        // '/onboarding': (context) => OnboardingScreen(),
+      },
     );
   }
 }

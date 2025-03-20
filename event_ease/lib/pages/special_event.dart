@@ -134,7 +134,7 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
           fit: StackFit.expand,
           children: [
             Image.network(
-              'https://images.unsplash.com/photo-1519741497674-611481b9c1d7',
+              '/event_ease/assets/wedding-bouquet-of-orange-roses-with-copy-space-and-no-people-D68C3P.jpg',
               fit: BoxFit.cover,
               errorBuilder: (context, error, stackTrace) {
                 return Container(
