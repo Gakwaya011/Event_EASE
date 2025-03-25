@@ -43,7 +43,7 @@ class _SplashPageState extends State<SplashPage> {
               child: Column(
                 children: [
                   Image.asset(
-                    '/event_ease/assets/logo.png', // Ensure the image is in your assets folder
+                    'assets/logo.png', // Ensure the image is in your assets folder
                     width: 100,
                     height: 100,
                   ),

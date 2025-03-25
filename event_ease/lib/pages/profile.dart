@@ -31,7 +31,7 @@ class ProfilePage extends StatelessWidget {
             CircleAvatar(
               radius: 50,
               backgroundImage: AssetImage(
-                "/event_ease/assets/edffd94c476e8e57f4b604fe5ea2aafe",
+                "/edffd94c476e8e57f4b604fe5ea2aafe.jpg",
               ),
             ),
             SizedBox(height: 10),
@@ -44,15 +44,15 @@ class ProfilePage extends StatelessWidget {
             ),
             SizedBox(height: 20),
             _buildSectionTitle("Account Information"),
-            _buildInfoTile("Username", "Scarlet Deadpool"),
-            _buildInfoTile("Email", "scardead@gmail.com"),
+            _buildInfoTile("Username:", "Scarlet Deadpool"),
+            _buildInfoTile("Email:", "scardead@gmail.com"),
             _buildChangePasswordButton(),
             _buildSectionTitle("Personal Information"),
             _buildInfoTile(
-              "User Role",
+              "User Role:",
               "Personal Planner, Tourism Stakeholder, Small Business",
             ),
-            _buildInfoTile("Your Events", "Birthday, Weddings, Meetings"),
+            _buildInfoTile("Your Events:", "Birthday, Weddings, Meetings"),
           ],
         ),
       ),

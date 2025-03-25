@@ -19,11 +19,11 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'EventEase',
-      initialRoute: '/splash', // Set the initial route
+      initialRoute: '/profile', // Set the initial route
       routes: {
         // '/': (context) => SpecialEvent(),
-        // '/profile': (context) => ProfilePage(),
-        '/splash': (context) => SplashPage(),
+        '/profile': (context) => ProfilePage(),
+        // '/splash': (context) => SplashPage(),
         // '/create': (context) => CreateEventPage(),
         // '/onboarding': (context) => OnboardingScreen(),
       },
