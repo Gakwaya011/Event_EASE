@@ -163,18 +163,27 @@ class _EventPlannerHomeState extends State<EventPlannerHome> {
                 onPressed: () {},
               ),
               SizedBox(width: 8),
-              Container(
-                width: 36,
-                height: 36,
-                decoration: const BoxDecoration(
-                  color: Colors.amber,
-                  shape: BoxShape.circle,
+              GestureDetector(
+                onTap: () {
+                  Navigator.pushNamed(
+                    context,
+                    '/profile',
+                  );
+                },
+                child: Container(
+                  width: 36,
+                  height: 36,
+                  decoration: const BoxDecoration(
+                    color: Colors.amber,
+                    shape: BoxShape.circle,
+                  ),
+                  child: const Icon(
+                    Icons.person,
+                    color: Colors.white,
+                  ),
                 ),
-                child: const Icon(
-                  Icons.person,
-                  color: Colors.white,
-                ),
-              ),
+              )
+
             ],
           ),
         ],
@@ -453,7 +462,7 @@ class _EventPlannerHomeState extends State<EventPlannerHome> {
               onTap: () => _onCardTap('Burial Template'),
             ),
             _buildTemplateCard(
-              title: 'Wedding Template',
+              title: 'Graduation Template',
               icon: Icons.school,
               color: Colors.purple.shade300,
               onTap: () => _onCardTap('Wedding Template'),
