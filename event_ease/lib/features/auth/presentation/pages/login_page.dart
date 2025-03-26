@@ -2,12 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../widgets/custom_textfield.dart';
 import '../widgets/google_signin_button.dart';
+import 'package:event_ease/core/providers/auth_provider.dart';
+import 'package:provider/provider.dart';
 
 class LoginPage extends StatelessWidget {
   const LoginPage({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+    final TextEditingController emailController = TextEditingController();
+    final TextEditingController passwordController = TextEditingController();
+
+
     return Scaffold(
       body: Container(
         decoration: const BoxDecoration(
@@ -96,14 +103,22 @@ class LoginPage extends StatelessWidget {
                   const SizedBox(height: 15),
 
                 // Username input field
-                CustomTextField(hintText: "Username", icon: Icons.person),
+                CustomTextField(
+                  controller: emailController, 
+                  hintText: "Username", 
+                  icon: Icons.person
+                ),
                 const SizedBox(height: 10),
 
                 // Password input field
-                CustomTextField(hintText: "Password", icon: Icons.lock, obscureText: true),
+                CustomTextField(
+                  controller: passwordController, 
+                  hintText: "Password", 
+                  icon: Icons.lock, obscureText: true
+                ),
                 const SizedBox(height: 10),
 
-                  // Forgot Password with more prominent positioning
+                  // Forgot Password
                   Align(
                     alignment: Alignment.centerRight,
                     child: TextButton(
@@ -125,10 +140,16 @@ class LoginPage extends StatelessWidget {
 
                   const SizedBox(height: 20),
 
-                  // Login Button with more modern, elevated design
+                  // Login Button
                   ElevatedButton(
-                    onPressed: () {
-                      context.push('/onboarding');
+                    onPressed: () async {
+                      await authProvider.signInWithEmail(
+                        emailController.text.trim(),
+                        passwordController.text.trim(),
+                      );
+                      if (authProvider.isAuthenticated) {
+                        context.go('/dashboard');
+                      }
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.orange,
