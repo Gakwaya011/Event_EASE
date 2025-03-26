@@ -77,8 +77,12 @@ class LoginPage extends StatelessWidget {
                     }
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.orange,
-                    padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 50),
+                   backgroundColor: const Color(0xFFFFAD33),
+                      foregroundColor: Colors.white,
+                      minimumSize: const Size(double.infinity, 50),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
                   ),
                   child: const Text("Sign In", style: TextStyle(fontSize: 16, color: Colors.white)),
                 ),
