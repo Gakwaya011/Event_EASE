@@ -9,7 +9,7 @@ class CustomTextField extends StatelessWidget {
     super.key,
     required this.hintText,
     required this.icon,
-    this.obscureText = false,
+    this.obscureText = false, required TextEditingController controller, required String? Function(dynamic value) validator,
   });
 
   @override
@@ -21,7 +21,9 @@ class CustomTextField extends StatelessWidget {
         decoration: InputDecoration(
           prefixIcon: Icon(icon),
           hintText: hintText,
-          border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide(color: Colors.grey.shade300)),
+          enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide(color: Colors.grey.shade600)),
+          focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide(color: Colors.amber)),
         ),
       ),
     );

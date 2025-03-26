@@ -46,7 +46,7 @@ class DefaultFirebaseOptions {
     messagingSenderId: '335284132892',
     projectId: 'eventease-e6bda',
     authDomain: 'eventease-e6bda.firebaseapp.com',
-    storageBucket: 'eventease-e6bda.firebasestorage.app',
+    storageBucket: 'eventease-e6bda.appspot.com',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
