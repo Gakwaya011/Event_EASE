@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import '../widgets/custom_textfield.dart';
 import '../widgets/google_signin_button.dart';
-import 'package:go_router/go_router.dart';
 
 class SignupPage extends StatefulWidget {
   const SignupPage({super.key});
@@ -13,134 +14,173 @@ class SignupPage extends StatefulWidget {
 class _SignupPageState extends State<SignupPage> {
   final _formKey = GlobalKey<FormState>();
 
-  final TextEditingController nameController = TextEditingController();
+  final TextEditingController usernameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+  final TextEditingController confirmPasswordController = TextEditingController();
 
-  void _signUp() {
+  void _signUp() async {
     if (_formKey.currentState!.validate()) {
-      // Save the user data to the database or authentication service
-      // For now, we just print the details
-      print("Sign Up successful for ${nameController.text}, Email: ${emailController.text}");
-      // Navigate to login page after successful sign-up
-      context.push('/login');
+      if (passwordController.text != confirmPasswordController.text) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Passwords do not match')),
+        );
+        return;
+      }
+      
+      try {
+        UserCredential userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
+          email: emailController.text.trim(),
+          password: passwordController.text.trim(),
+        );
+
+        await userCredential.user!.updateDisplayName(usernameController.text);
+        
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Sign up successful!')),
+        );
+        context.push('/login');
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Sign up failed: $e')),
+        );
+      }
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [
-              Color(0xFFFFFFFF), // White at the top
-              Color(0xFFFFF2DC), // Soft peach at the bottom
-            ],
+      body: SingleChildScrollView(
+        child: Container(
+          height: MediaQuery.of(context).size.height,
+          decoration: const BoxDecoration(
+            color: Color(0xFFFFF4E5),
           ),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(20.0),
+          padding: const EdgeInsets.symmetric(horizontal: 20),
           child: Form(
-            key: _formKey, // Add Form key
+            key: _formKey,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                const Text(
-                  "Sign Up",
-                  style: TextStyle(
-                    fontSize: 28,
-                    fontWeight: FontWeight.bold,
-                    color: Color(0xFFEB7D3A), // App orange color
-                  ),
-                ),
-
+               Image.asset('assets/event_ease_logo.png', height: 100),
+                const SizedBox(height: 20),
                 const SizedBox(height: 20),
 
-                // Full Name input field
-                CustomTextField(
-                  hintText: "Full Name",
-                  icon: Icons.person,
-                  controller: nameController,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return "Full Name is required";
-                    }
-                    return null;
-                  },
+                // Welcome Text
+                const Text(
+                  "Welcome to Event Ease",
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black87,
+                  ),
                 ),
+                const Text(
+                  "Sign up to our platform",
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: Colors.black54,
+                  ),
+                ),
+                const SizedBox(height: 20),
 
+                // Google Sign In Button
+                GoogleSignInButton(),
+                const SizedBox(height: 20),
+
+                // Divider
+                Row(
+                  children: [
+                    Expanded(child: Divider(color: Colors.grey.shade400)),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 10),
+                      child: Text(
+                        'Or',
+                        style: TextStyle(color: Colors.grey.shade600),
+                      ),
+                    ),
+                    Expanded(child: Divider(color: Colors.grey.shade400)),
+                  ],
+                ),
+                const SizedBox(height: 20),
+
+                // Username Field
+                CustomTextField(
+                  hintText: "Username",
+                  icon: Icons.person,
+                  controller: usernameController,
+                  validator: (value) => value == null || value.isEmpty ? "Username is required" : null,
+                ),
                 const SizedBox(height: 10),
 
-                // Email input field with validation
+                // Email Field
                 CustomTextField(
                   hintText: "Email",
                   icon: Icons.email,
                   controller: emailController,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return "Email is required";
-                    }
-                    if (!RegExp(r"^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$").hasMatch(value)) {
-                      return "Enter a valid email";
-                    }
-                    return null;
-                  },
+                  validator: (value) => value == null || !value.contains("@") ? "Enter a valid email" : null,
                 ),
-
                 const SizedBox(height: 10),
 
-                // Password input field with validation
+                // Password Field
                 CustomTextField(
                   hintText: "Password",
                   icon: Icons.lock,
                   obscureText: true,
                   controller: passwordController,
-                  validator: (value) {
-                    if (value == null || value.length < 6) {
-                      return "Password must be at least 6 characters";
-                    }
-                    return null;
-                  },
+                  validator: (value) => value == null || value.length < 6 ? "Password must be at least 6 characters" : null,
                 ),
+                const SizedBox(height: 10),
 
+                // Confirm Password Field
+                CustomTextField(
+                  hintText: "Confirm Password",
+                  icon: Icons.lock,
+                  obscureText: true,
+                  controller: confirmPasswordController,
+                  validator: (value) => value == null || value.isEmpty ? "Please confirm your password" : null,
+                ),
                 const SizedBox(height: 20),
 
                 // Sign Up Button
                 ElevatedButton(
                   onPressed: _signUp,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFFEB7D3A), // App orange color
-                    padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 50),
+                    backgroundColor: const Color(0xFFFFAD33),
+                    minimumSize: const Size(double.infinity, 50),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
                   ),
                   child: const Text(
-                    "Sign Up",
-                    style: TextStyle(fontSize: 16, color: Colors.white),
+                    'Sign Up', 
+                    style: TextStyle(
+                      color: Colors.white, 
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
+                const SizedBox(height: 20),
 
-                const SizedBox(height: 10),
-
-                // Google Sign-In Button
-                GoogleSignInButton(),
-
-                const SizedBox(height: 10),
-
-                // Login redirect
+                // Sign In Link
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Text("Already have an account?"),
-                    TextButton(
-                      onPressed: () {
-                        context.push('/login'); // Navigate to login page
-                      },
+                    const Text(
+                      "Don't have an account? ",
+                      style: TextStyle(color: Colors.black54),
+                    ),
+                    GestureDetector(
+                      onTap: () => context.push('/login'),
                       child: const Text(
-                        "Login",
-                        style: TextStyle(color: Color(0xFFEB7D3A)), // App orange color
+                        'Sign in',
+                        style: TextStyle(
+                          color: Color(0xFFFFAD33),
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
                   ],

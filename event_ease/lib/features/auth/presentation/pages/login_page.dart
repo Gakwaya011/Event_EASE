@@ -5,7 +5,6 @@ import 'package:go_router/go_router.dart';
 import '../widgets/custom_textfield.dart';
 import '../widgets/google_signin_button.dart';
 
-
 class LoginPage extends StatelessWidget {
   const LoginPage({super.key});
 
@@ -49,7 +48,6 @@ class LoginPage extends StatelessWidget {
                 const Text("Or", style: TextStyle(fontSize: 14, color: Colors.grey)),
                 const SizedBox(height: 10),
 
-                // Email input field
                 CustomTextField(
                   controller: emailController,
                   hintText: "Email",
@@ -57,7 +55,6 @@ class LoginPage extends StatelessWidget {
                 ),
                 const SizedBox(height: 10),
 
-                // Password input field
                 CustomTextField(
                   controller: passwordController,
                   hintText: "Password",
@@ -73,7 +70,7 @@ class LoginPage extends StatelessWidget {
                       passwordController.text.trim(),
                     );
                     if (authProvider.isAuthenticated) {
-                      context.go('/home'); // Navigate to home page after login
+                      context.go('/home');
                     }
                   },
                   style: ElevatedButton.styleFrom(
@@ -85,22 +82,18 @@ class LoginPage extends StatelessWidget {
 
                 const SizedBox(height: 20),
 
-                // Sign Up link
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     const Text("Don't have an account?"),
                     TextButton(
                       onPressed: () {
-                        context.go('/signup'); // Navigate to Sign-up page
+                        context.go('/signup');
                       },
-                      child: const Text(
-                        "Sign up",
-                        style: TextStyle(color: Colors.orange),
-                      ),
+                      child: const Text("Sign up", style: TextStyle(color: Colors.orange)),
                     ),
                   ],
-                )
+                ),
               ],
             ),
           ),
