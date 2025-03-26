@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 void main() {
   runApp(MaterialApp(
@@ -12,7 +13,7 @@ void main() {
 }
 
 class ProfilePage extends StatefulWidget {
-  const ProfilePage({Key? key}) : super(key: key);
+  const ProfilePage({super.key});
 
   @override
   State<ProfilePage> createState() => _ProfilePageState();
@@ -374,7 +375,7 @@ class _ProfilePageState extends State<ProfilePage> {
             icon: const Icon(Icons.arrow_back_ios),
             onPressed: () {
               // Navigate back to homepage (/)
-              Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
+              context.push('/dashboard');
             },
           ),
           const Text(

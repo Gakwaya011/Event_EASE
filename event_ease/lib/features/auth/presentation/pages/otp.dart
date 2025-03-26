@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 class OTPConfirmationPage extends StatefulWidget {
+  const OTPConfirmationPage({super.key});
+
   @override
   _OTPConfirmationPageState createState() => _OTPConfirmationPageState();
 }

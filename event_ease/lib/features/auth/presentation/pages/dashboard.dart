@@ -1,35 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
-
-class EventPlannerHome extends StatefulWidget {
-  const EventPlannerHome({super.key});
-
-  @override
-  State<EventPlannerHome> createState() => _EventPlannerHomeState();
-}
-
-class _EventPlannerHomeState extends State<EventPlannerHome> {
-  // Controller for search input
-  final TextEditingController _searchController = TextEditingController();
-  
-  // Selected bottom nav index
-  int _selectedIndex = 0;
-  
-  @override
-  void dispose() {
-    _searchController.dispose();
-    super.dispose();
-  }
-
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-  }
-  
-  void _onCardTap(String title) {
-    Navigator.pushNamed(context, '/event');
-  }
+class DashboardPage extends StatelessWidget {
+  const DashboardPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -48,42 +21,46 @@ class _EventPlannerHomeState extends State<EventPlannerHome> {
           ),
         ),
         child: SafeArea(
-          child: Stack(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Background design bars
-              Positioned(
-                right: 0,
-                bottom: 0,
-                child: _buildDesignBars(),
-              ),
+              // App Bar
+              _buildAppBar(context),
               
-              // Main content
-              Column(
-                children: [
-                  _buildAppBar(),
-                  _buildSearchBar(),
-                  Expanded(
-                    child: SingleChildScrollView(
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const SizedBox(height: 16),
-                            _buildMyEventsSection(),
-                            const SizedBox(height: 24),
-                            _buildStartPlanningSection(),
-                            const SizedBox(height: 24),
-                            _buildForYouSection(),
-                            const SizedBox(height: 40),
-                          ],
-                        ),
-                      ),
+              // Search Bar
+              _buildSearchBar(),
+              
+              Expanded(
+                child: SingleChildScrollView(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const SizedBox(height: 16),
+                        
+                        // My Events Section
+                        _buildMyEventsSection(context),
+                        
+                        const SizedBox(height: 24),
+                        
+                        // Start Planning Section
+                        _buildStartPlanningSection(context),
+                        
+                        const SizedBox(height: 24),
+                        
+                        // For You Section
+                        _buildForYouSection(context),
+                        
+                        const SizedBox(height: 40),
+                      ],
                     ),
                   ),
-                  _buildBottomNavBar(),
-                ],
+                ),
               ),
+              
+              // Bottom Navigation
+              _buildBottomNavBar(context),
             ],
           ),
         ),
@@ -91,56 +68,9 @@ class _EventPlannerHomeState extends State<EventPlannerHome> {
     );
   }
 
-  Widget _buildDesignBars() {
-  return Positioned(
-    right: -20, // Adjust the position to move the bars to the right
-    bottom: 20, // Adjust the position to move the bars to the bottom
-    child: Opacity(
-      opacity: 0.4,
-      child: Transform.rotate(
-        angle: 0.8, // Rotate the bars diagonally (in radians)
-        child: SizedBox(
-          height: 180,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              Container(
-                width: 180,
-                height: 40,
-                decoration: BoxDecoration(
-                  color: const Color.fromARGB(255, 255, 255, 255),
-                  borderRadius: BorderRadius.circular(20),
-                ),
-              ),
-              const SizedBox(height: 12),
-              Container(
-                width: 200,
-                height: 40,
-                decoration: BoxDecoration(
-                  color: const Color.fromARGB(255, 244, 210, 156),
-                  borderRadius: BorderRadius.circular(20),
-                ),
-              ),
-              const SizedBox(height: 12),
-              Container(
-                width: 170,
-                height: 40,
-                decoration: BoxDecoration(
-                  color: const Color.fromARGB(255, 253, 204, 118),
-                  borderRadius: BorderRadius.circular(20),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    ),
-  );
-}
-
-  Widget _buildAppBar() {
+  Widget _buildAppBar(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 26.0, vertical: 8.0),
+      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -162,14 +92,8 @@ class _EventPlannerHomeState extends State<EventPlannerHome> {
                 icon: const Icon(Icons.notifications_outlined),
                 onPressed: () {},
               ),
-              SizedBox(width: 8),
               GestureDetector(
-                onTap: () {
-                  Navigator.pushNamed(
-                    context,
-                    '/profile',
-                  );
-                },
+                onTap: () => context.push('/profile'),
                 child: Container(
                   width: 36,
                   height: 36,
@@ -183,7 +107,6 @@ class _EventPlannerHomeState extends State<EventPlannerHome> {
                   ),
                 ),
               )
-
             ],
           ),
         ],
@@ -193,7 +116,7 @@ class _EventPlannerHomeState extends State<EventPlannerHome> {
 
   Widget _buildSearchBar() {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 36.0, vertical: 18.0),
+      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
       child: Row(
         children: [
           Expanded(
@@ -203,9 +126,8 @@ class _EventPlannerHomeState extends State<EventPlannerHome> {
                 color: Colors.grey.withOpacity(0.1),
                 borderRadius: BorderRadius.circular(8),
               ),
-              child: TextField(
-                controller: _searchController,
-                decoration: const InputDecoration(
+              child: const TextField(
+                decoration: InputDecoration(
                   hintText: 'Search',
                   hintStyle: TextStyle(color: Colors.grey),
                   prefixIcon: Icon(Icons.search, color: Colors.grey),
@@ -223,20 +145,9 @@ class _EventPlannerHomeState extends State<EventPlannerHome> {
               color: Colors.amber,
               borderRadius: BorderRadius.circular(8),
             ),
-            child: Material(
-              color: Colors.transparent,
-              child: InkWell(
-                onTap: () {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Filter tapped')),
-                  );
-                },
-                borderRadius: BorderRadius.circular(8),
-                child: const Icon(
-                  Icons.filter_list,
-                  color: Colors.white,
-                ),
-              ),
+            child: const Icon(
+              Icons.filter_list,
+              color: Colors.white,
             ),
           ),
         ],
@@ -244,42 +155,47 @@ class _EventPlannerHomeState extends State<EventPlannerHome> {
     );
   }
 
-  Widget _buildMyEventsSection() {
+  Widget _buildMyEventsSection(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          'My Events',
-          style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
+        const Padding(
+          padding: EdgeInsets.symmetric(horizontal: 16.0),
+          child: Text(
+            'My Events',
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+            ),
           ),
         ),
         const SizedBox(height: 12),
-        SizedBox(
-          height: 80,
-          child: ListView(
-            scrollDirection: Axis.horizontal,
+        SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          child: Row(
             children: [
               _buildEventCard(
+                context,
                 title: "Kamila's Birthday",
                 icon: Icons.cake,
                 color: Colors.red.shade300,
                 hasHeart: true,
-                onTap: () => _onCardTap("Kamila's Birthday"),
               ),
+              const SizedBox(width: 12),
               _buildEventCard(
+                context,
                 title: "My wedding",
                 icon: Icons.card_giftcard,
                 color: Colors.blue.shade300,
-                onTap: () => _onCardTap("My wedding"),
               ),
+              const SizedBox(width: 12),
               _buildEventCard(
+                context,
                 title: "Corporate",
                 icon: Icons.business,
                 color: Colors.amber,
                 isPartial: true,
-                onTap: () => _onCardTap("Corporate"),
               ),
             ],
           ),
@@ -288,19 +204,18 @@ class _EventPlannerHomeState extends State<EventPlannerHome> {
     );
   }
 
-  Widget _buildEventCard({
+  Widget _buildEventCard(
+    BuildContext context, {
     required String title,
     required IconData icon,
     required Color color,
-    required Function() onTap,
     bool hasHeart = false,
     bool isPartial = false,
   }) {
     return GestureDetector(
-      onTap: onTap,
+      onTap: () => context.push('/single_event'),
       child: Container(
         width: 140,
-        margin: const EdgeInsets.only(right: 12),
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
         decoration: BoxDecoration(
           color: Colors.white,
@@ -358,129 +273,132 @@ class _EventPlannerHomeState extends State<EventPlannerHome> {
     );
   }
 
-  Widget _buildStartPlanningSection() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text(
-          'Start planning new event',
-          style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        const SizedBox(height: 12),
-        InkWell(
-          onTap: () {
-            Navigator.pushNamed(context, '/create');
-          },
-          borderRadius: BorderRadius.circular(12),
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(12),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.grey.withOpacity(0.1),
-                  blurRadius: 4,
-                  offset: const Offset(0, 2),
-                ),
-              ],
-            ),
-            child: Row(
-              children: [
-                Container(
-                  height: 36,
-                  width: 36,
-                  decoration: BoxDecoration(
-                    color: Colors.amber.withOpacity(0.2),
-                    shape: BoxShape.circle,
-                  ),
-                  child: const Icon(
-                    Icons.add,
-                    color: Colors.amber,
-                  ),
-                ),
-                const SizedBox(width: 12),
-                const Text(
-                  'Create new event',
-                  style: TextStyle(
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ],
+  Widget _buildStartPlanningSection(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            'Start planning new event',
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
             ),
           ),
-        ),
-      ],
+          const SizedBox(height: 12),
+          GestureDetector(
+            onTap: () => context.push('/create_event'),
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(12),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.withOpacity(0.1),
+                    blurRadius: 4,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
+              ),
+              child: Row(
+                children: [
+                  Container(
+                    height: 36,
+                    width: 36,
+                    decoration: BoxDecoration(
+                      color: Colors.amber.withOpacity(0.2),
+                      shape: BoxShape.circle,
+                    ),
+                    child: const Icon(
+                      Icons.add,
+                      color: Colors.amber,
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  const Text(
+                    'Create new event',
+                    style: TextStyle(
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 
-  Widget _buildForYouSection() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text(
-          'For you',
-          style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
+  Widget _buildForYouSection(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            'For you',
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+            ),
           ),
-        ),
-        const SizedBox(height: 12),
-        GridView.count(
-          physics: const NeverScrollableScrollPhysics(),
-          crossAxisCount: 2,
-          crossAxisSpacing: 16,
-          mainAxisSpacing: 16,
-          shrinkWrap: true,
-          childAspectRatio: 1.3,
-          children: [
-            _buildTemplateCard(
-              title: 'Birthday Template',
-              icon: Icons.cake,
-              color: Colors.red.shade300,
-              onTap: () => _onCardTap('Birthday Template'),
-            ),
-            _buildTemplateCard(
-              title: 'Wedding Template',
-              icon: Icons.card_giftcard,
-              color: Colors.blue.shade300,
-              onTap: () => _onCardTap('Wedding Template'),
-            ),
-            _buildTemplateCard(
-              title: 'Corporate Meeting',
-              icon: Icons.business,
-              color: Colors.amber,
-              onTap: () => _onCardTap('Corporate Meeting'),
-            ),
-            _buildTemplateCard(
-              title: 'Burial Template',
-              icon: Icons.home,
-              color: Colors.green.shade400,
-              onTap: () => _onCardTap('Burial Template'),
-            ),
-            _buildTemplateCard(
-              title: 'Graduation Template',
-              icon: Icons.school,
-              color: Colors.purple.shade300,
-              onTap: () => _onCardTap('Wedding Template'),
-            ),
-          ],
-        ),
-      ],
+          const SizedBox(height: 12),
+          GridView.count(
+            physics: const NeverScrollableScrollPhysics(),
+            crossAxisCount: 2,
+            crossAxisSpacing: 16,
+            mainAxisSpacing: 16,
+            shrinkWrap: true,
+            childAspectRatio: 1.3,
+            children: [
+              _buildTemplateCard(
+                context,
+                title: 'Birthday Template',
+                icon: Icons.cake,
+                color: Colors.red.shade300,
+              ),
+              _buildTemplateCard(
+                context,
+                title: 'Wedding Template',
+                icon: Icons.card_giftcard,
+                color: Colors.blue.shade300,
+              ),
+              _buildTemplateCard(
+                context,
+                title: 'Corporate Meeting',
+                icon: Icons.business,
+                color: Colors.amber,
+              ),
+              _buildTemplateCard(
+                context,
+                title: 'Burial Template',
+                icon: Icons.home,
+                color: Colors.green.shade400,
+              ),
+              _buildTemplateCard(
+                context,
+                title: 'Graduation Template',
+                icon: Icons.school,
+                color: Colors.purple.shade300,
+              ),
+            ],
+          ),
+        ],
+      ),
     );
   }
 
-  Widget _buildTemplateCard({
+  Widget _buildTemplateCard(
+    BuildContext context, {
     required String title,
     required IconData icon,
     required Color color,
-    required Function() onTap,
   }) {
     return GestureDetector(
-      onTap: onTap,
+      onTap: () => context.push('/single_event'),
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
@@ -527,7 +445,7 @@ class _EventPlannerHomeState extends State<EventPlannerHome> {
     );
   }
 
-  Widget _buildBottomNavBar() {
+  Widget _buildBottomNavBar(BuildContext context) {
     return Container(
       height: 64,
       decoration: BoxDecoration(
@@ -543,30 +461,19 @@ class _EventPlannerHomeState extends State<EventPlannerHome> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          _buildNavItem(Icons.home, index: 0),
-          _buildNavItem(Icons.add, index: 1),
-          _buildNavItem(Icons.settings, index: 2),
+          IconButton(
+            icon: const Icon(Icons.home, color: Colors.amber),
+            onPressed: () {},
+          ),
+          IconButton(
+            icon: const Icon(Icons.add, color: Colors.grey),
+            onPressed: () => context.push('/create_event'),
+          ),
+          IconButton(
+            icon: const Icon(Icons.settings, color: Colors.grey),
+            onPressed: () => context.push('/profile'),
+          ),
         ],
-      ),
-    );
-  }
-
-  Widget _buildNavItem(IconData icon, {required int index}) {
-    final bool isSelected = _selectedIndex == index;
-    return InkWell(
-      onTap: () => _onItemTapped(index),
-      borderRadius: BorderRadius.circular(24),
-      child: Container(
-        width: 48,
-        height: 48,
-        decoration: BoxDecoration(
-          color: isSelected ? Colors.amber.withOpacity(0.1) : Colors.transparent,
-          shape: BoxShape.circle,
-        ),
-        child: Icon(
-          icon,
-          color: isSelected ? Colors.amber : Colors.grey,
-        ),
       ),
     );
   }

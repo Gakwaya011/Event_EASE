@@ -1,34 +1,39 @@
 import 'package:flutter/material.dart';
-import 'pages/dashboard.dart'; 
-import 'pages/singl_event.dart';
-import 'pages/create_event.dart';
-import 'pages/onboarding.dart';
-import 'pages/profile.dart';
-import 'pages/splash.dart';
-import 'pages/otp.dart';
+// import 'package:firebase_core/firebase_core.dart';
+import 'package:provider/provider.dart';
+import 'core/navigation/router.dart';
+import 'core/providers/auth_provider.dart';
+// import 'firebase_options.dart';
 
-void main() {
-  runApp(const MyApp());
+
+
+Future<void> main() async {
+  
+
+WidgetsFlutterBinding.ensureInitialized();
+
+  // if (Firebase.apps.isEmpty) {
+  //   await Firebase.initializeApp();
+  // }
+
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => AuthProvider()), // ✅ Provide AuthProvider
+      ],
+      child: const MyApp(),
+    ),
+  );
 }
 
-class MyApp extends StatelessWidget { 
+class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return MaterialApp.router(
       debugShowCheckedModeBanner: false,
-      title: 'EventEase',
-      initialRoute: '/otp', // Set the initial route
-      routes: {
-        '/': (context) => EventPlannerHome(),
-        '/event': (context) => SinglEvent(),
-        '/create': (context) => CreateEventPage(),
-        '/onboarding': (context) => OnboardingScreen(),
-        '/profile': (context) => ProfilePage(),
-        '/splash': (context) => SplashPage(),
-        '/otp': (context) => OTPConfirmationPage(),
-      },
+      routerConfig: router, // Use GoRouter for navigation
     );
   }
 }
