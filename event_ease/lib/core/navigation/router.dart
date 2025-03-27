@@ -11,7 +11,7 @@ import '../../features/auth/presentation/pages/splash.dart';
 import '../../features/auth/presentation/pages/onboarding.dart';
 
 final GoRouter router = GoRouter(
-  initialLocation: '/dashboard',
+  initialLocation: '/login',
   routes: [
     GoRoute(path: '/splash',
       builder: (context, state) => const SplashPage()

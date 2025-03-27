@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import '../widgets/bottom_bar.dart';
 
 class CreateEventPage extends StatefulWidget {
   const CreateEventPage({super.key});
@@ -437,6 +438,8 @@ class _CreateEventPageState extends State<CreateEventPage> {
             ),
           ),
         ),
+        // Bottom Navigation
+        bottomNavigationBar: CustomBottomBar(),
       ),
     );
   }

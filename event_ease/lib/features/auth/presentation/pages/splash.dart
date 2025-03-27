@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:go_router/go_router.dart';
 
 class SplashPage extends StatefulWidget {
   const SplashPage({super.key});
@@ -16,10 +17,7 @@ class _SplashPageState extends State<SplashPage> {
     super.initState();
     // Navigate to Home after 3 seconds
     Timer(Duration(seconds: 3), () {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => SplashPage()),
-      );
+        context.go('/login');
     });
   }
 
@@ -47,8 +45,8 @@ class _SplashPageState extends State<SplashPage> {
                 children: [
                   Image.asset(
                     'assets/logo.png', // Ensure the image is in your assets folder
-                    width: 100,
-                    height: 100,
+                    width: 150,
+                    height: 150,
                   ),
                   SizedBox(height: 10),
                   Text(
@@ -63,7 +61,7 @@ class _SplashPageState extends State<SplashPage> {
               ),
             ),
 
-            SizedBox(height: 40),
+            SizedBox(height: 60),
 
             // Slogan
             AnimatedOpacity(
@@ -84,7 +82,7 @@ class _SplashPageState extends State<SplashPage> {
                     'Plan with Ease, Party with Peace.',
                     style: GoogleFonts.poppins(
                       fontSize: 14,
-                      color: Colors.black54,
+                      color: Colors.black87,
                     ),
                   ),
                   SizedBox(height: 5),
