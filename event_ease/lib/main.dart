@@ -5,7 +5,8 @@ import 'package:provider/provider.dart';
 import 'core/navigation/router.dart';
 import 'core/providers/auth_provider.dart';
 import 'core/providers/auth_provider.dart';
-// import 'firebase_options.dart';
+import 'firebase_options.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 
 
 
@@ -14,7 +15,11 @@ Future<void> main() async {
 
 WidgetsFlutterBinding.ensureInitialized();
 
-  if (Firebase.apps.isEmpty) {
+  if (kIsWeb) {
+    // ✅ Web requires FirebaseOptions
+    await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  } else {
+    // ✅ Mobile initializes normally
     await Firebase.initializeApp();
   }
 
