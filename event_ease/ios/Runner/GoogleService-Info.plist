@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>335284132892-l8q4sqku9kffjd76vqb2phkmt9225tcu.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.335284132892-l8q4sqku9kffjd76vqb2phkmt9225tcu</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>335284132892-4sj2qd47ffhpm9qg26a4g9b0omnp416r.apps.googleusercontent.com</string>
+	<key>API_KEY</key>
+	<string>AIzaSyAZ0pMqN_CZEVXRy-cMd92cn4LCkeLijNk</string>
+	<key>GCM_SENDER_ID</key>
+	<string>335284132892</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.example.eventEase</string>
+	<key>PROJECT_ID</key>
+	<string>eventease-e6bda</string>
+	<key>STORAGE_BUCKET</key>
+	<string>eventease-e6bda.firebasestorage.app</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:335284132892:ios:a1900efbecad75628fd3d9</string>
+</dict>
+</plist>

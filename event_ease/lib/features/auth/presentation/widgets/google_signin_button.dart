@@ -7,8 +7,10 @@ class GoogleSignInButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return ElevatedButton.icon(
       onPressed: () {
-        // Implement Google Sign-In logic
+        // Implement Goog
+        //le Sign-In logic
         Provider.of<AuthProvider>(context, listen: false).signInWithGoogle();
+        
      
       },
       icon: Image.asset(

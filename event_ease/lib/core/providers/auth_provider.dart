@@ -1,3 +1,4 @@
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -15,32 +16,36 @@ class AuthProvider with ChangeNotifier {
   bool get isAuthenticated => _user != null;
 
   // 🔹 Sign in with Email & Password
-  Future<void> signInWithEmail(String email, String password) async {
+  Future<bool> signInWithEmail(String email, String password) async {
     try {
       await _auth.signInWithEmailAndPassword(email: email, password: password);
       _user = _auth.currentUser;
       notifyListeners();
+      return true;
     } catch (e) {
-      print("Sign in error: $e");
+      debugPrint("Sign in error: $e");
+      return false;
     }
   }
 
   // 🔹 Sign up with Email & Password
-  Future<void> signUpWithEmail(String email, String password) async {
+  Future<bool> signUpWithEmail(String email, String password) async {
     try {
       await _auth.createUserWithEmailAndPassword(email: email, password: password);
       _user = _auth.currentUser;
       notifyListeners();
+      return true;
     } catch (e) {
-      print("Sign up error: $e");
+      debugPrint("Sign up error: $e");
+      return false;
     }
   }
 
   // 🔹 Google Sign-In
-  Future<void> signInWithGoogle() async {
+  Future<bool> signInWithGoogle() async {
     try {
       final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
-      if (googleUser == null) return;
+      if (googleUser == null) return false;
 
       final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
       final credential = GoogleAuthProvider.credential(
@@ -51,8 +56,11 @@ class AuthProvider with ChangeNotifier {
       await _auth.signInWithCredential(credential);
       _user = _auth.currentUser;
       notifyListeners();
+      
+      return true;
     } catch (e) {
-      print("Google sign-in error: $e");
+      debugPrint("Google sign-in error: $e");
+      return false;
     }
   }
 
@@ -63,3 +71,6 @@ class AuthProvider with ChangeNotifier {
     notifyListeners();
   }
 }
+
+
+
