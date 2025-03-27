@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class OnboardingScreen extends StatefulWidget {
-  const OnboardingScreen({Key? key}) : super(key: key);
+  const OnboardingScreen({super.key});
 
   @override
   _OnboardingScreenState createState() => _OnboardingScreenState();
@@ -54,8 +55,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       // On the last step and pressed "Finish"
       if (_acceptedTerms) {
         // Navigate to the main app or home screen
-        // Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomeScreen()));
-        print('Onboarding completed, navigating to home screen');
+        context.push('/dashboard');
       } else {
         // Show error that terms must be accepted
         ScaffoldMessenger.of(context).showSnackBar(
