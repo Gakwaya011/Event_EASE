@@ -47,7 +47,7 @@ class DashboardPage extends StatelessWidget {
                         const SizedBox(height: 16),
                         
                         // My Events Section
-                        myEventsSection(),
+                        MyEventsSection(),
                         
                         const SizedBox(height: 24),
                         
