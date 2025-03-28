@@ -26,16 +26,16 @@ class _CreateEventPageState extends State<CreateEventPage> {
   final TextEditingController _taskController = TextEditingController();
   
   // For guests range
-  final List<String> _guestOptions = ['1-5', '6-10', '11-20', '21-50', '50+'];
-  String _selectedGuestRange = '1-5';
+  final List<String> _guestOptions = ['1-10', '11-30', '31-50', '51-100', '101+'];
+  String _selectedGuestRange = '1-10';
   
   // For budget range
-  final List<String> _budgetOptions = ['< \$100', '\$100-\$500', '\$500-\$1000', '\$1000+'];
-  String _selectedBudget = '< \$100';
+  final List<String> _budgetOptions = ['> \$100', '\$101-\$500', '\$501-\$1000', '\$1001-\$5000', '\$5001+'];
+  String _selectedBudget = '> \$100';
   
   // For categories
-  final List<String> _categories = ['Personal', 'Work', 'Family', 'Friends', 'Other'];
-  String _selectedCategory = 'Personal';
+  final List<String> _categories = ['Wedding', 'Conference', 'Birthday', 'Party', 'Burial', 'Graduation', 'Other'];
+  String _selectedCategory = 'Other';
   
   // For reminders
   final List<int> _reminderOptions = [5, 10, 15, 30, 60, 1440]; // minutes (1440 = 1 day)
@@ -128,42 +128,45 @@ class _CreateEventPageState extends State<CreateEventPage> {
     });
   }
 
-  void _saveEvent() async {
-    if (_formKey.currentState!.validate()) {
-      try {
-        FirebaseFirestore firestore = FirebaseFirestore.instance;
+ void _saveEvent() async {
+  if (_formKey.currentState!.validate()) {
+    try {
+      FirebaseFirestore firestore = FirebaseFirestore.instance;
 
-        String formattedStartTime = _startTime.format(context);
-        String formattedEndTime = _endTime.format(context);
+      await firestore.collection('events').add({
+        "name": _nameController.text.trim(),
+        "description": _descriptionController.text.trim(),
+        "location": _locationController.text.trim(),
+        "date": Timestamp.fromDate(_selectedDate),
+        "startTime": {
+          "hour": _startTime.hour,
+          "minute": _startTime.minute,
+        },
+        "endTime": {
+          "hour": _endTime.hour,
+          "minute": _endTime.minute,
+        },
+        "tasks": _tasks,
+        "guestRange": _selectedGuestRange,
+        "budget": _selectedBudget,
+        "category": _selectedCategory,
+        "reminderMinutes": _selectedReminder,
+        "participants": _participants, // List of participant emails
+        "createdAt": FieldValue.serverTimestamp(),
+      });
 
-        await firestore.collection('events').add({
-          "name": _nameController.text,
-          "description": _descriptionController.text,
-          "location": _locationController.text,
-          "date": Timestamp.fromDate(_selectedDate),
-          "startTime": formattedStartTime,
-          "endTime": formattedEndTime,
-          "tasks": _tasks,
-          "guestRange": _selectedGuestRange,
-          "budget": _selectedBudget,
-          "category": _selectedCategory,
-          "reminderMinutes": _selectedReminder,
-          "participants": _participants,
-          "createdAt": FieldValue.serverTimestamp(),
-        });
-
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Event created successfully!')),
-        );
-        Navigator.pop(context);
-      } catch (e) {
-        print("Error saving event: $e");
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to create event: $e')),
-        );
-      }
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Event created successfully!')),
+      );
+      Navigator.pop(context);
+    } catch (e) {
+      print("Error saving event: $e");
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to create event: $e')),
+      );
     }
   }
+}
 
   @override
   Widget build(BuildContext context) {
@@ -350,86 +353,112 @@ class _CreateEventPageState extends State<CreateEventPage> {
                 _buildTasksList(),
                 
                 const SizedBox(height: 20),
-                
+
                 // Guests Section
                 _buildSectionTitle('Guests'),
-                DropdownButtonFormField<String>(
-                decoration: const InputDecoration(labelText: 'Guest Range'),
-                value: _selectedGuestRange,
-                items: _guestOptions.map((range) {
-                  return DropdownMenuItem<String>(
-                    value: range,
-                    child: Text(range),
-                  );
-                }).toList(),
-                onChanged: (value) => setState(() => _selectedGuestRange = value!),
-              ),
-
-                const SizedBox(height: 20),
-
-              // Budget Section
-              _buildSectionTitle('Budget'),
-              DropdownButtonFormField<String>(
-                decoration: const InputDecoration(labelText: 'Budget'),
-                value: _selectedBudget,
-                items: _budgetOptions.map((budget) {
-                  return DropdownMenuItem<String>(
-                    value: budget,
-                    child: Text(budget),
-                  );
-                }).toList(),
-                onChanged: (value) => setState(() => _selectedBudget = value!),
-              ),
-
-              const SizedBox(height: 20),
-
-              // Budget Section
-              _buildSectionTitle('Participants'),
-
-              TextField(
-                controller: _participantController,
-                decoration: InputDecoration(
-                  labelText: "Add Participant Email",
-                  suffixIcon: IconButton(
-                    icon: Icon(Icons.add),
-                    onPressed: () {
-                      if (_participantController.text.isNotEmpty) {
-                        setState(() {
-                          _participants.add(_participantController.text);
-                          _participantController.clear();
-                        });
-                      }
-                    },
-                  ),
+                Row(
+                  children: [
+                    Icon(Icons.group, color: Colors.grey.shade600),
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: DropdownButtonFormField<String>(
+                        decoration: const InputDecoration(labelText: 'Guest Range'),
+                        value: _selectedGuestRange,
+                        items: _guestOptions.map((range) {
+                          return DropdownMenuItem<String>(
+                            value: range,
+                            child: Text(range),
+                          );
+                        }).toList(),
+                        onChanged: (value) => setState(() => _selectedGuestRange = value!),
+                      ),
+                      ),
+                  ],
                 ),
-              ),
-              Wrap(
-                children: _participants.map((email) => Chip(
-                  label: Text(email),
-                  onDeleted: () {
-                    setState(() {
-                      _participants.remove(email);
-                    });
-                  },
-                )).toList(),
-              ),
-              
-              const SizedBox(height: 32),
-                
+                const SizedBox(height: 8),
+
+                // Budget Section
+                _buildSectionTitle('Budget'),
+                Row(
+                  children: [
+                    Icon(Icons.attach_money, color: Colors.grey.shade600),
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: DropdownButtonFormField<String>(
+                        decoration: const InputDecoration(labelText: 'Budget'),
+                        value: _selectedBudget,
+                        items: _budgetOptions.map((budget) {
+                          return DropdownMenuItem<String>(
+                            value: budget,
+                            child: Text(budget),
+                          );
+                        }).toList(),
+                        onChanged: (value) => setState(() => _selectedBudget = value!),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 8),
+
+
+                // Participants Section
+                _buildSectionTitle('Participants'),
+                Row(
+                  children: [
+                    Icon(Icons.person_add, color: Colors.grey.shade600),
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: Column(
+                        children: [
+                          TextField(
+                            controller: _participantController,
+                            decoration: InputDecoration(
+                              labelText: "Add Participant Email",
+                              suffixIcon: IconButton(
+                                icon: Icon(Icons.add),
+                                onPressed: () {
+                                  if (_participantController.text.isNotEmpty) {
+                                    setState(() {
+                                      _participants.add(_participantController.text);
+                                      _participantController.clear();
+                                    });
+                                  }
+                                },
+                              ),
+                            ),
+                          ),
+                          Wrap(
+                            children: _participants.map((email) => Chip(
+                              label: Text(email),
+                              onDeleted: () {
+                                setState(() {
+                                  _participants.remove(email);
+                                });
+                              },
+                            )).toList(),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 8),
+
+              const SizedBox(height: 32),                
               Center(
                 child: ElevatedButton(
                   onPressed: _saveEvent,
                   style: ElevatedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(horizontal: 48, vertical: 12),
                   ),
-                  child: const Text('Create Event', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                  child: const Text('Create Event', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white)),
                 ),
               ),
-              ],
+                 ],
             ),
           ),
+          // Bottom Navigation
         ),
-        // Bottom Navigation
         bottomNavigationBar: CustomBottomBar(),
       ),
     );
