@@ -1,5 +1,8 @@
+import 'package:event_ease/core/providers/auth_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
+
 import '../widgets/bottom_bar.dart';
 import '../widgets/profile/profile_header.dart';
 import '../widgets/profile/profile_section.dart';
@@ -29,42 +32,79 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   Widget build(BuildContext context) {
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+
     return Scaffold(
       appBar: PreferredSize(
-        preferredSize: Size.fromHeight(70.0),
+        preferredSize: const Size.fromHeight(70.0),
         child: _buildAppBar(),
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          children: [
-            ProfileHeader(username: _usernameController.text),
-            const SizedBox(height: 30),
-            
-            ProfileSection(
-              title: "Account Information",
-              isEditing: _isEditingAccount,
-              onEditPressed: _toggleAccountEdit,
-              onSavePressed: _saveChanges,
+      body: Container(
+        height: double.infinity,
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              Colors.white,
+              Color(0xFFFFF2D6),
+              Color(0xFFFFE4B3),
+            ],
+            stops: [0.0, 0.7, 1.0],
+          ),
+        ),
+        child: SafeArea(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.all(20),
+            child: Column(
               children: [
-                ProfileTextField(label: "Username", controller: _usernameController, isEditing: _isEditingAccount),
-                ProfileTextField(label: "Email", controller: _emailController, isEditing: _isEditingAccount),
+                ProfileHeader(username: _usernameController.text),
+                const SizedBox(height: 30),
+                
+                ProfileSection(
+                  title: "Account Information",
+                  isEditing: _isEditingAccount,
+                  onEditPressed: _toggleAccountEdit,
+                  onSavePressed: _saveChanges,
+                  children: [
+                    ProfileTextField(label: "Username", controller: _usernameController, isEditing: _isEditingAccount),
+                    ProfileTextField(label: "Email", controller: _emailController, isEditing: _isEditingAccount),
+                  ],
+                ),
+          
+                const SizedBox(height: 40),
+          
+                ProfileSection(
+                  title: "Personal Information",
+                  isEditing: _isEditingPersonal,
+                  onEditPressed: _togglePersonalEdit,
+                  onSavePressed: _saveChanges,
+                  children: [
+                    ProfileTextField(label: "User Role", controller: _userRoleController, isEditing: _isEditingPersonal),
+                    ProfileTextField(label: "Your Events", controller: _eventsController, isEditing: _isEditingPersonal),
+                  ],
+                ),
+          
+                const SizedBox(height: 40),
+          
+                // Sign Out Button
+                ElevatedButton(
+                  onPressed: () {
+                    authProvider.signOut();
+                    context.go('/login'); // Redirect to login page
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.grey.shade500,
+                    padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 12),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                  ),
+                  child: const Text("Sign Out", style: TextStyle(fontSize: 16, color: Colors.white)),
+                ),
+          
+                const SizedBox(height: 20),
               ],
             ),
-
-            const SizedBox(height: 40),
-
-            ProfileSection(
-              title: "Personal Information",
-              isEditing: _isEditingPersonal,
-              onEditPressed: _togglePersonalEdit,
-              onSavePressed: _saveChanges,
-              children: [
-                ProfileTextField(label: "User Role", controller: _userRoleController, isEditing: _isEditingPersonal),
-                ProfileTextField(label: "Your Events", controller: _eventsController, isEditing: _isEditingPersonal),
-              ],
-            ),
-          ],
+          ),
         ),
       ),
       bottomNavigationBar: const CustomBottomBar(),
@@ -80,8 +120,7 @@ class _ProfilePageState extends State<ProfilePage> {
           IconButton(
             icon: const Icon(Icons.arrow_back_ios),
             onPressed: () {
-              // Navigate back to homepage (/)
-              context.push('/dashboard');
+              context.push('/dashboard'); // Navigate back to dashboard
             },
           ),
           const Text(
@@ -97,13 +136,10 @@ class _ProfilePageState extends State<ProfilePage> {
                 icon: const Icon(Icons.notifications_outlined),
                 onPressed: () {},
               ),
-              SizedBox(width: 20),
+              const SizedBox(width: 20),
               GestureDetector(
                 onTap: () {
-                  Navigator.pushNamed(
-                    context,
-                    '/profile',
-                  );
+                  context.push('/profile');
                 },
                 child: Container(
                   width: 36,
@@ -124,5 +160,4 @@ class _ProfilePageState extends State<ProfilePage> {
       ),
     );
   }
-
 }

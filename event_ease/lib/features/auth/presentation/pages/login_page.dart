@@ -21,6 +21,24 @@ class _LoginPageState extends State<LoginPage> {
   bool isLoading = false;
 
   @override
+  void initState() {
+    super.initState();
+    // Check if the user is already authenticated on page load
+    _checkAuthenticationStatus();
+  }
+
+  void _checkAuthenticationStatus() {
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+    // If user info is available in the provider, navigate to dashboard
+    if (authProvider.userData != null) {
+      // If user is already logged in, redirect to the dashboard
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        context.go('/dashboard');
+      });
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
 

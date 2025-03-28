@@ -1,15 +1,42 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
+import 'package:event_ease/core/providers/auth_provider.dart';
 
-// importing the UI widgets
+// Importing the UI widgets
 import '../widgets/dashboard/appbar.dart';
 import '../widgets/dashboard/search_bar.dart';
 import '../widgets/bottom_bar.dart';
 import '../widgets/dashboard/event_card.dart';
 import '../widgets/dashboard/template_card.dart';
 
-class DashboardPage extends StatelessWidget {
+class DashboardPage extends StatefulWidget {
   const DashboardPage({super.key});
+
+  @override
+  State<DashboardPage> createState() => _DashboardPageState();
+}
+
+class _DashboardPageState extends State<DashboardPage> {
+  @override
+  void initState() {
+    super.initState();
+    _checkAuthenticationStatus();
+  }
+
+  void _checkAuthenticationStatus() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final authProvider = Provider.of<AuthProvider>(context, listen: false);
+      
+      // Wait until the user data is fully loaded
+    if (authProvider.isLoading) return;
+
+    // Redirect only if user is NOT authenticated
+    if (authProvider.userData == null) {
+      context.go('/login');
+    }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -75,7 +102,6 @@ class DashboardPage extends StatelessWidget {
     );
   }
 
-
   Widget _buildStartPlanningSection(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -134,5 +160,4 @@ class DashboardPage extends StatelessWidget {
       ),
     );
   }
-
 }

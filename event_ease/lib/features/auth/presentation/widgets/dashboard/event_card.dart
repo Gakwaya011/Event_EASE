@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'map_categories.dart';
+import '../../../../../core/providers/auth_provider.dart';
+import 'package:provider/provider.dart';
 
 class MyEventsSection extends StatefulWidget {
   const MyEventsSection({super.key});
@@ -16,29 +18,34 @@ class _MyEventsSectionState extends State<MyEventsSection> {
   @override
   void initState() {
     super.initState();
-    fetchEvents();
-  }
-
-  Future<void> fetchEvents() async {
-    try {
-      var snapshot = await FirebaseFirestore.instance.collection("events").get();
-      setState(() {
-        events = snapshot.docs.map((doc) => doc.data()).toList();
-      });
-    } catch (e) {
-      print("Error fetching events: $e");
-    }
   }
 
   @override
 Widget build(BuildContext context) {
+  final authProvider = Provider.of<AuthProvider>(context);
+  final participatingEventIds = authProvider.userData?.eventsParticipating ?? [];
+
+  // If there are no participating event IDs, show a message
+  if (participatingEventIds.isEmpty) {
+    return Center(child: Text("No events found"));
+  }
+
   return StreamBuilder(
-    stream: FirebaseFirestore.instance.collection('events').snapshots(),
+     // If there are participating event IDs, filter by them
+    stream: participatingEventIds.isNotEmpty
+        ? FirebaseFirestore.instance
+            .collection('events')
+            .where(FieldPath.documentId, whereIn: participatingEventIds)
+            .snapshots()
+        : FirebaseFirestore.instance.collection('events').snapshots(), 
     builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
       if (snapshot.connectionState == ConnectionState.waiting) {
-        return CircularProgressIndicator();
+        return Center(
+          child: CircularProgressIndicator(
+            valueColor: AlwaysStoppedAnimation<Color>(Colors.amber),
+          ),
+        );
       }
-
       if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
         return Center(child: Text("No events found"));
       }
