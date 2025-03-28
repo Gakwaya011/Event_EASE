@@ -1,9 +1,10 @@
+import 'package:event_ease/firebase_options.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
 import 'core/navigation/router.dart';
 import 'core/providers/auth_provider.dart';
-// import 'firebase_options.dart';
+
 
 
 
@@ -12,9 +13,7 @@ Future<void> main() async {
 
 WidgetsFlutterBinding.ensureInitialized();
 
-  if (Firebase.apps.isEmpty) {
-    await Firebase.initializeApp();
-  }
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   runApp(
     MultiProvider(

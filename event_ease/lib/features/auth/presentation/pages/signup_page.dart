@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -18,23 +20,45 @@ class _SignupPageState extends State<SignupPage> {
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController confirmPasswordController = TextEditingController();
 
+  @override
+  void dispose() {
+    usernameController.dispose();
+    emailController.dispose();
+    passwordController.dispose();
+    confirmPasswordController.dispose();
+    super.dispose();
+  }
+
   void _signUp() async {
-    if (_formKey.currentState!.validate()) {
+    if (_formKey.currentState?.validate() ?? false) {
+      if (passwordController.text.trim().isEmpty ||
+          emailController.text.trim().isEmpty ||
+          usernameController.text.trim().isEmpty ||
+          confirmPasswordController.text.trim().isEmpty) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Please fill in all fields')),
+        );
+        return;
+      }
+
       if (passwordController.text != confirmPasswordController.text) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Passwords do not match')),
         );
         return;
       }
-      
+
       try {
         UserCredential userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
           email: emailController.text.trim(),
           password: passwordController.text.trim(),
         );
 
-        await userCredential.user!.updateDisplayName(usernameController.text);
-        
+        if (userCredential.user != null) {
+          await userCredential.user!.updateDisplayName(usernameController.text.trim());
+          await userCredential.user!.reload();
+        }
+
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Sign up successful!')),
         );
@@ -86,11 +110,10 @@ class _SignupPageState extends State<SignupPage> {
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 20),
-                  
-                  // Updated Google Sign In Button
+
                   GoogleSignInButton(),
                   const SizedBox(height: 20),
-                  
+
                   Row(
                     children: [
                       Expanded(
@@ -117,8 +140,7 @@ class _SignupPageState extends State<SignupPage> {
                       ),
                     ],
                   ),
-                  
-                  // Rest of the code remains the same...
+
                   CustomTextField(
                     hintText: "Username",
                     icon: Icons.person,
@@ -153,7 +175,6 @@ class _SignupPageState extends State<SignupPage> {
                   ),
                   const SizedBox(height: 20),
 
-                  // Updated Sign Up Button
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFFFFAD33),

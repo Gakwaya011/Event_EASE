@@ -1,20 +1,20 @@
+// lib/widgets/google_signin_button.dart
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '/../core/providers/auth_provider.dart';
 
 class GoogleSignInButton extends StatelessWidget {
+  const GoogleSignInButton({super.key});
+
   @override
   Widget build(BuildContext context) {
     return ElevatedButton.icon(
-      onPressed: () {
-        // Implement Goog
-        //le Sign-In logic
-        Provider.of<AuthProvider>(context, listen: false).signInWithGoogle();
-        
-     
+      onPressed: () async {
+        await Provider.of<AuthProvider>(context, listen: false).signInWithGoogle();
       },
       icon: Image.asset(
-        'assets/google.png', // Ensure this asset exists
+        'assets/google.png',
         height: 24,
         width: 24,
       ),
@@ -28,6 +28,6 @@ class GoogleSignInButton extends StatelessWidget {
           side: BorderSide(color: Colors.grey.shade300),
         ),
       ),
-    ); // Closing parentheses added here
+    );
   }
 }

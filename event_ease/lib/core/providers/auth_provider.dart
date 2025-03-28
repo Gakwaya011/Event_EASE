@@ -1,3 +1,4 @@
+// lib/core/providers/auth_provider.dart
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -8,14 +9,21 @@ class AuthProvider with ChangeNotifier {
   User? _user;
 
   AuthProvider() {
-    _user = _auth.currentUser;
+    _initializeUser();
   }
 
   User? get user => _user;
 
   bool get isAuthenticated => _user != null;
 
-  // 🔹 Sign in with Email & Password
+  // ✅ Initialize user safely after Firebase is ready
+  Future<void> _initializeUser() async {
+    await Future.delayed(Duration.zero);
+    _user = _auth.currentUser;
+    notifyListeners();
+  }
+
+  // ✅ Sign in with Email & Password
   Future<bool> signInWithEmail(String email, String password) async {
     try {
       await _auth.signInWithEmailAndPassword(email: email, password: password);
@@ -28,20 +36,23 @@ class AuthProvider with ChangeNotifier {
     }
   }
 
-  // 🔹 Sign up with Email & Password
+  // ✅ Sign up with Email & Password
   Future<bool> signUpWithEmail(String email, String password) async {
-    try {
-      await _auth.createUserWithEmailAndPassword(email: email, password: password);
-      _user = _auth.currentUser;
-      notifyListeners();
-      return true;
-    } catch (e) {
-      debugPrint("Sign up error: $e");
-      return false;
-    }
+  try {
+    await _auth.createUserWithEmailAndPassword(email: email, password: password);
+    _user = _auth.currentUser;
+    notifyListeners();
+    return true;
+  } on FirebaseAuthException catch (e) {
+    debugPrint("FirebaseAuthException: ${e.message}");
+    return false;
+  } catch (e) {
+    debugPrint("Unknown error: $e");
+    return false;
   }
+}
 
-  // 🔹 Google Sign-In
+  // ✅ Google Sign-In
   Future<bool> signInWithGoogle() async {
     try {
       final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
@@ -64,13 +75,10 @@ class AuthProvider with ChangeNotifier {
     }
   }
 
-  // 🔹 Sign Out
+  // ✅ Sign Out
   Future<void> signOut() async {
     await _auth.signOut();
     _user = null;
     notifyListeners();
   }
 }
-
-
-
