@@ -1,3 +1,5 @@
+// lib/core/providers/auth_provider.dart
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -7,40 +9,54 @@ class AuthProvider with ChangeNotifier {
   User? _user;
 
   AuthProvider() {
-    _user = _auth.currentUser;
+    _initializeUser();
   }
 
   User? get user => _user;
 
   bool get isAuthenticated => _user != null;
 
-  // 🔹 Sign in with Email & Password
-  Future<void> signInWithEmail(String email, String password) async {
+  // ✅ Initialize user safely after Firebase is ready
+  Future<void> _initializeUser() async {
+    await Future.delayed(Duration.zero);
+    _user = _auth.currentUser;
+    notifyListeners();
+  }
+
+  // ✅ Sign in with Email & Password
+  Future<bool> signInWithEmail(String email, String password) async {
     try {
       await _auth.signInWithEmailAndPassword(email: email, password: password);
       _user = _auth.currentUser;
       notifyListeners();
+      return true;
     } catch (e) {
-      print("Sign in error: $e");
+      debugPrint("Sign in error: $e");
+      return false;
     }
   }
 
-  // 🔹 Sign up with Email & Password
-  Future<void> signUpWithEmail(String email, String password) async {
-    try {
-      await _auth.createUserWithEmailAndPassword(email: email, password: password);
-      _user = _auth.currentUser;
-      notifyListeners();
-    } catch (e) {
-      print("Sign up error: $e");
-    }
+  // ✅ Sign up with Email & Password
+  Future<bool> signUpWithEmail(String email, String password) async {
+  try {
+    await _auth.createUserWithEmailAndPassword(email: email, password: password);
+    _user = _auth.currentUser;
+    notifyListeners();
+    return true;
+  } on FirebaseAuthException catch (e) {
+    debugPrint("FirebaseAuthException: ${e.message}");
+    return false;
+  } catch (e) {
+    debugPrint("Unknown error: $e");
+    return false;
   }
+}
 
-  // 🔹 Google Sign-In
-  Future<void> signInWithGoogle() async {
+  // ✅ Google Sign-In
+  Future<bool> signInWithGoogle() async {
     try {
       final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
-      if (googleUser == null) return;
+      if (googleUser == null) return false;
 
       final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
       final credential = GoogleAuthProvider.credential(
@@ -51,12 +67,15 @@ class AuthProvider with ChangeNotifier {
       await _auth.signInWithCredential(credential);
       _user = _auth.currentUser;
       notifyListeners();
+      
+      return true;
     } catch (e) {
-      print("Google sign-in error: $e");
+      debugPrint("Google sign-in error: $e");
+      return false;
     }
   }
 
-  // 🔹 Sign Out
+  // ✅ Sign Out
   Future<void> signOut() async {
     await _auth.signOut();
     _user = null;
