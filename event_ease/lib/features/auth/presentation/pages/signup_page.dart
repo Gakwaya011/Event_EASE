@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import '../widgets/custom_textfield.dart';
-import '../widgets/google_signin_button.dart';
 import 'package:go_router/go_router.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-
+import '../widgets/custom_textfield.dart';
+import '../widgets/google_signin_button.dart';
 
 class SignupPage extends StatefulWidget {
   const SignupPage({super.key});
@@ -14,7 +13,6 @@ class SignupPage extends StatefulWidget {
 
 class _SignupPageState extends State<SignupPage> {
   final _formKey = GlobalKey<FormState>();
-
   final TextEditingController usernameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
@@ -49,7 +47,6 @@ class _SignupPageState extends State<SignupPage> {
     }
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -67,25 +64,17 @@ class _SignupPageState extends State<SignupPage> {
         ),
         child: Center(
           child: SingleChildScrollView(
-            child: Container(
-              decoration: BoxDecoration(
-                // color: Colors.white,
-              ),
+            child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 35),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  // EventEase Logo with a more modern touch
-                  Container(
-                    child: Image.asset(
-                      'assets/logo.png',
-                      height: 100,
-                      width: 100,
-                    ),
+                  Image.asset(
+                    'assets/event_ease_logo.png',
+                    height: 100,
                   ),
                   const SizedBox(height: 20),
-
                   Text(
                     "Sign Up to EventEase",
                     style: TextStyle(
@@ -96,14 +85,12 @@ class _SignupPageState extends State<SignupPage> {
                     ),
                     textAlign: TextAlign.center,
                   ),
-
                   const SizedBox(height: 20),
-
-                  // Google Sign In Button
+                  
+                  // Updated Google Sign In Button
                   GoogleSignInButton(),
                   const SizedBox(height: 20),
-
-
+                  
                   Row(
                     children: [
                       Expanded(
@@ -130,58 +117,51 @@ class _SignupPageState extends State<SignupPage> {
                       ),
                     ],
                   ),
+                  
+                  // Rest of the code remains the same...
+                  CustomTextField(
+                    hintText: "Username",
+                    icon: Icons.person,
+                    controller: usernameController,
+                    validator: (value) => value == null || value.isEmpty ? "Username is required" : null,
+                  ),
+                  const SizedBox(height: 10),
 
-                  // Username Field
-                CustomTextField(
-                  hintText: "Username",
-                  icon: Icons.person,
-                  controller: usernameController,
-                  validator: (value) => value == null || value.isEmpty ? "Username is required" : null,
-                ),
-                const SizedBox(height: 10),
+                  CustomTextField(
+                    hintText: "Email",
+                    icon: Icons.email,
+                    controller: emailController,
+                    validator: (value) => value == null || !value.contains("@") ? "Enter a valid email" : null,
+                  ),
+                  const SizedBox(height: 10),
 
-                // Email Field
-                CustomTextField(
-                  hintText: "Email",
-                  icon: Icons.email,
-                  controller: emailController,
-                  validator: (value) => value == null || !value.contains("@") ? "Enter a valid email" : null,
-                ),
-                const SizedBox(height: 10),
+                  CustomTextField(
+                    hintText: "Password",
+                    icon: Icons.lock,
+                    obscureText: true,
+                    controller: passwordController,
+                    validator: (value) => value == null || value.length < 6 ? "Password must be at least 6 characters" : null,
+                  ),
+                  const SizedBox(height: 10),
 
-                // Password Field
-                CustomTextField(
-                  hintText: "Password",
-                  icon: Icons.lock,
-                  obscureText: true,
-                  controller: passwordController,
-                  validator: (value) => value == null || value.length < 6 ? "Password must be at least 6 characters" : null,
-                ),
-                const SizedBox(height: 10),
-
-                // Confirm Password Field
-                CustomTextField(
-                  hintText: "Confirm Password",
-                  icon: Icons.lock,
-                  obscureText: true,
-                  controller: confirmPasswordController,
-                  validator: (value) => value == null || value.isEmpty ? "Please confirm your password" : null,
-                ),
-                const SizedBox(height: 20),
-
+                  CustomTextField(
+                    hintText: "Confirm Password",
+                    icon: Icons.lock,
+                    obscureText: true,
+                    controller: confirmPasswordController,
+                    validator: (value) => value == null || value.isEmpty ? "Please confirm your password" : null,
+                  ),
                   const SizedBox(height: 20),
 
-                  // Sign Up Button with elevated design
+                  // Updated Sign Up Button
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.orange,
+                      backgroundColor: const Color(0xFFFFAD33),
                       foregroundColor: Colors.white,
-                      padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 50),
+                      minimumSize: const Size(double.infinity, 50),
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
+                        borderRadius: BorderRadius.circular(8),
                       ),
-                      elevation: 5,
-                      shadowColor: Colors.orange.withOpacity(0.5),
                     ),
                     onPressed: _signUp,
                     child: const Text(
@@ -189,14 +169,11 @@ class _SignupPageState extends State<SignupPage> {
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w600,
-                        letterSpacing: 0.5,
                       ),
                     ),
                   ),
 
                   const SizedBox(height: 20),
-
-                  // Login link with improved design
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -206,7 +183,7 @@ class _SignupPageState extends State<SignupPage> {
                       ),
                       TextButton(
                         onPressed: () {
-                          context.push('/login'); // Navigate back to Login Page
+                          context.push('/login');
                         },
                         style: TextButton.styleFrom(
                           foregroundColor: Colors.orange,

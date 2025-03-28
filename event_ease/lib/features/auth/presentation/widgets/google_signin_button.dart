@@ -1,43 +1,31 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '/../core/providers/auth_provider.dart';
 
 class GoogleSignInButton extends StatelessWidget {
-  const GoogleSignInButton({super.key});
-
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        // Implement Google sign-in logic
+    return ElevatedButton.icon(
+      onPressed: () {
+        // Implement Google Sign-In logic
+        Provider.of<AuthProvider>(context, listen: false).signInWithGoogle();
+     
       },
-      child: Container(
-        height: 50,
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(12),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.1),
-              blurRadius: 8,
-              offset: const Offset(0, 3),
-            ),
-          ],
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Image.asset("assets/google.png", height: 24),
-            const SizedBox(width: 10),
-            const Text(
-              "Sign in with Google",
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w600,
-                color: Colors.black87,
-              ),
-            ),
-          ],
+      icon: Image.asset(
+        'assets/google.png', // Ensure this asset exists
+        height: 24,
+        width: 24,
+      ),
+      label: const Text('Sign in with Google'),
+      style: ElevatedButton.styleFrom(
+        foregroundColor: Colors.black87,
+        backgroundColor: Colors.white,
+        minimumSize: const Size(double.infinity, 50),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8),
+          side: BorderSide(color: Colors.grey.shade300),
         ),
       ),
-    );
+    ); // Closing parentheses added here
   }
 }
