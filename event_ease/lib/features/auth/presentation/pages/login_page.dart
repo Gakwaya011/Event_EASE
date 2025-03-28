@@ -1,4 +1,5 @@
 import 'package:event_ease/core/providers/auth_provider.dart';
+import 'package:event_ease/features/auth/presentation/widgets/custom_textfield.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
@@ -29,6 +30,10 @@ class _LoginPageState extends State<LoginPage> {
 
   void _checkAuthenticationStatus() {
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
+
+     // Wait until the user data is fully loaded
+    if (authProvider.isLoading) return;
+
     // If user info is available in the provider, navigate to dashboard
     if (authProvider.userData != null) {
       // If user is already logged in, redirect to the dashboard
@@ -83,37 +88,21 @@ class _LoginPageState extends State<LoginPage> {
                   const SizedBox(height: 10),
 
                   // Email Input
-                  TextFormField(
+                  CustomTextField(
+                    hintText: "Email",
+                    icon: Icons.email,
                     controller: emailController,
-                    decoration: InputDecoration(
-                      labelText: "Email",
-                      border: OutlineInputBorder(),
-                      prefixIcon: const Icon(Icons.email),
-                    ),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) return 'Email is required';
-                      if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w]{2,4}$').hasMatch(value)) {
-                        return 'Enter a valid email';
-                      }
-                      return null;
-                    },
+                    validator: (value) => value == null || !value.contains("@") ? "Enter a valid email" : null,
                   ),
                   const SizedBox(height: 10),
 
                   // Password Input
-                  TextFormField(
-                    controller: passwordController,
+                  CustomTextField(
+                    hintText: "Password",
+                    icon: Icons.lock,
                     obscureText: true,
-                    decoration: InputDecoration(
-                      labelText: "Password",
-                      border: OutlineInputBorder(),
-                      prefixIcon: const Icon(Icons.lock),
-                    ),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) return 'Password is required';
-                      if (value.length < 6) return 'Password must be at least 6 characters';
-                      return null;
-                    },
+                    controller: passwordController,
+                    validator: (value) => value == null || value.length < 6 ? "Password must be at least 6 characters" : null,
                   ),
                   const SizedBox(height: 10),
 

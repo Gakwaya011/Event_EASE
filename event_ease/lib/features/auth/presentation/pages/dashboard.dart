@@ -35,6 +35,9 @@ class _DashboardPageState extends State<DashboardPage> {
     if (authProvider.userData == null) {
       context.go('/login');
     }
+    else if (authProvider.userData!.status == false) {
+      context.go('/onboarding');
+    }
     });
   }
 

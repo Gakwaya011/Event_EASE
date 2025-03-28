@@ -5,6 +5,7 @@ class UserModel {
   final String name;
   final DateTime createdAt;
   final String photoURL;
+  final bool status;
   final List<String> eventsCreated;
   final List<String> eventsParticipating;
 
@@ -13,6 +14,7 @@ class UserModel {
     required this.name,
     required this.createdAt,
     required this.photoURL,
+    required this.status,
     required this.eventsCreated, 
     required this.eventsParticipating
   });
@@ -24,6 +26,7 @@ class UserModel {
       createdAt: (data['created_at'] as Timestamp).toDate(),
       name: data['name'] ?? '',
       photoURL: data['photoURL'] ?? '',
+      status: data['status'] ?? false,
       eventsCreated: List<String>.from(data['eventsCreated'] ?? []),
       eventsParticipating: List<String>.from(data['eventsParticipating'] ?? []),
     );

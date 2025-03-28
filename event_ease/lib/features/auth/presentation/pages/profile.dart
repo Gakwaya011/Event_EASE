@@ -89,8 +89,8 @@ class _ProfilePageState extends State<ProfilePage> {
           
                 // Sign Out Button
                 ElevatedButton(
-                  onPressed: () {
-                    authProvider.signOut();
+                  onPressed: () async {
+                    await authProvider.signOut();
                     context.go('/login'); // Redirect to login page
                   },
                   style: ElevatedButton.styleFrom(

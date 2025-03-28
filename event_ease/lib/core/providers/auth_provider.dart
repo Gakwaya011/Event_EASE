@@ -64,8 +64,12 @@ class AuthProvider with ChangeNotifier {
         // Save user data in Firestore
         await FirebaseFirestore.instance.collection('users').doc(_user!.uid).set({
           "email": email,
-          "createdAt": DateTime.now(),
-          "role": "user", // Default to 'user' role
+          "created_at": DateTime.now(),
+          'eventsParticipating': [],
+          'eventsCreated': [],
+          'photoURL': '',
+          'name': '',
+          'status': false
         });
         // Fetch the user data after signing up
         await _fetchUserData(_user!.uid);
@@ -126,7 +130,6 @@ class AuthProvider with ChangeNotifier {
       if (userDoc.exists) {
         // Convert Firestore data to UserModel and update provider
         _userData = UserModel.fromFirestore(userDoc.data() as Map<String, dynamic>);
-        debugPrint(_userData!.email);
       }
     } catch (e) {
       debugPrint("Error fetching user data: $e");
