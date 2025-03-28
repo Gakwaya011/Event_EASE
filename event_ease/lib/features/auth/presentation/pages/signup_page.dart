@@ -29,45 +29,62 @@ class _SignupPageState extends State<SignupPage> {
     super.dispose();
   }
 
+  // Updated _signUp method with async handling and loading indicator
   void _signUp() async {
-    if (_formKey.currentState?.validate() ?? false) {
-      if (passwordController.text.trim().isEmpty ||
-          emailController.text.trim().isEmpty ||
-          usernameController.text.trim().isEmpty ||
-          confirmPasswordController.text.trim().isEmpty) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Please fill in all fields')),
-        );
-        return;
-      }
+    if (!(_formKey.currentState?.validate() ?? false)) {
+      return; // Return if the form is not valid
+    }
 
-      if (passwordController.text != confirmPasswordController.text) {
+    // Show loading dialog before performing the signup operation
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => const Center(child: CircularProgressIndicator()),
+    );
+
+    try {
+      final email = emailController.text.trim();
+      final password = passwordController.text.trim();
+      final username = usernameController.text.trim();
+
+      // Check if the password and confirm password match
+      if (password != confirmPasswordController.text.trim()) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Passwords do not match')),
         );
         return;
       }
 
-      try {
-        UserCredential userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
-          email: emailController.text.trim(),
-          password: passwordController.text.trim(),
-        );
+      // Attempt to create the user using FirebaseAuth
+      UserCredential userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
 
-        if (userCredential.user != null) {
-          await userCredential.user!.updateDisplayName(usernameController.text.trim());
-          await userCredential.user!.reload();
-        }
+      // Update the display name of the user after creation
+      await userCredential.user?.updateDisplayName(username);
+      await userCredential.user?.reload();
 
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Sign up successful!')),
-        );
+      // Remove the loading dialog
+      if (mounted) Navigator.pop(context);
+
+      // Show success message
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Sign up successful!')),
+      );
+
+      // Navigate to the login page
+      if (mounted) {
         context.push('/login');
-      } catch (e) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Sign up failed: $e')),
-        );
       }
+    } catch (e) {
+      // Remove the loading dialog before showing the error message
+      if (mounted) Navigator.pop(context);
+
+      // Show error message
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Sign up failed. Please try again.')),
+      );
     }
   }
 
@@ -141,56 +158,63 @@ class _SignupPageState extends State<SignupPage> {
                     ],
                   ),
 
-                  CustomTextField(
-                    hintText: "Username",
-                    icon: Icons.person,
-                    controller: usernameController,
-                    validator: (value) => value == null || value.isEmpty ? "Username is required" : null,
-                  ),
-                  const SizedBox(height: 10),
+                  Form(
+                    key: _formKey,
+                    child: Column(
+                      children: [
+                        CustomTextField(
+                          hintText: "Username",
+                          icon: Icons.person,
+                          controller: usernameController,
+                          validator: (value) => value == null || value.isEmpty ? "Username is required" : null,
+                        ),
+                        const SizedBox(height: 10),
 
-                  CustomTextField(
-                    hintText: "Email",
-                    icon: Icons.email,
-                    controller: emailController,
-                    validator: (value) => value == null || !value.contains("@") ? "Enter a valid email" : null,
-                  ),
-                  const SizedBox(height: 10),
+                        CustomTextField(
+                          hintText: "Email",
+                          icon: Icons.email,
+                          controller: emailController,
+                          validator: (value) => value == null || !value.contains("@") ? "Enter a valid email" : null,
+                        ),
+                        const SizedBox(height: 10),
 
-                  CustomTextField(
-                    hintText: "Password",
-                    icon: Icons.lock,
-                    obscureText: true,
-                    controller: passwordController,
-                    validator: (value) => value == null || value.length < 6 ? "Password must be at least 6 characters" : null,
-                  ),
-                  const SizedBox(height: 10),
+                        CustomTextField(
+                          hintText: "Password",
+                          icon: Icons.lock,
+                          obscureText: true,
+                          controller: passwordController,
+                          validator: (value) => value == null || value.length < 6 ? "Password must be at least 6 characters" : null,
+                        ),
+                        const SizedBox(height: 10),
 
-                  CustomTextField(
-                    hintText: "Confirm Password",
-                    icon: Icons.lock,
-                    obscureText: true,
-                    controller: confirmPasswordController,
-                    validator: (value) => value == null || value.isEmpty ? "Please confirm your password" : null,
-                  ),
-                  const SizedBox(height: 20),
+                        CustomTextField(
+                          hintText: "Confirm Password",
+                          icon: Icons.lock,
+                          obscureText: true,
+                          controller: confirmPasswordController,
+                          validator: (value) => value == null || value.isEmpty ? "Please confirm your password" : null,
+                        ),
+                        const SizedBox(height: 20),
 
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFFFFAD33),
-                      foregroundColor: Colors.white,
-                      minimumSize: const Size(double.infinity, 50),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                    ),
-                    onPressed: _signUp,
-                    child: const Text(
-                      "Sign Up",
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                      ),
+                        ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color(0xFFFFAD33),
+                            foregroundColor: Colors.white,
+                            minimumSize: const Size(double.infinity, 50),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                          ),
+                          onPressed: _signUp,
+                          child: const Text(
+                            "Sign Up",
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
 
@@ -217,7 +241,7 @@ class _SignupPageState extends State<SignupPage> {
                         ),
                       ),
                     ],
-                  )
+                  ),
                 ],
               ),
             ),
