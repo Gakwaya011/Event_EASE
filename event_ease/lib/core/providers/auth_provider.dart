@@ -20,6 +20,10 @@ class AuthProvider with ChangeNotifier {
   UserModel? get userData => _userData;
   bool get isAuthenticated => _user != null;
   bool get isLoading => _isLoading;
+  // Getter to access the current user object
+  User? get currentUser {
+    return _auth.currentUser;
+  }
 
 
   // Initialize user data after Firebase is ready
@@ -163,6 +167,19 @@ Future<void> saveOnboardingData({ List<String>? role, String? preferedBudget, Li
     throw Exception("Failed to save user data");
   }
 }
+
+// Update user's events list
+void updateUserEvents(List<String> eventIds) {
+    if (currentUser != null) {
+      print('Updating user events: $eventIds');
+      // Update the local state
+      userData?.eventsCreated.addAll(eventIds);
+      userData?.eventsParticipating.addAll(eventIds);
+
+      // Notify listeners so that all screens that are listening to AuthProvider will update
+      notifyListeners();
+    }
+  }
 
 }
 

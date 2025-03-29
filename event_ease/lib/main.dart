@@ -4,7 +4,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
 import 'core/navigation/router.dart';
 import 'core/providers/auth_provider.dart';
-import 'core/providers/auth_provider.dart';
+import 'core/providers/event_provider.dart';
 import 'firebase_options.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 
@@ -26,7 +26,8 @@ WidgetsFlutterBinding.ensureInitialized();
   runApp(
     MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => AuthProvider()), // ✅ Provide AuthProvider
+        ChangeNotifierProvider(create: (_) => AuthProvider()), // Provide AuthProvider
+        ChangeNotifierProvider(create: (_) => EventProvider()), // Event AuthProvider
       ],
       child: const MyApp(),
     ),

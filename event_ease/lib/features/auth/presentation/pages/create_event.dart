@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../widgets/bottom_bar.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:provider/provider.dart';
+import '../../../../../core/providers/event_provider.dart';
 
 
 class CreateEventPage extends StatefulWidget {
@@ -128,45 +129,46 @@ class _CreateEventPageState extends State<CreateEventPage> {
     });
   }
 
- void _saveEvent() async {
-  if (_formKey.currentState!.validate()) {
-    try {
-      FirebaseFirestore firestore = FirebaseFirestore.instance;
+  void _saveEvent() async {
+    if (_formKey.currentState!.validate()) {
+      try {
+        final eventProvider = Provider.of<EventProvider>(context, listen: false);
 
-      await firestore.collection('events').add({
-        "name": _nameController.text.trim(),
-        "description": _descriptionController.text.trim(),
-        "location": _locationController.text.trim(),
-        "date": Timestamp.fromDate(_selectedDate),
-        "startTime": {
-          "hour": _startTime.hour,
-          "minute": _startTime.minute,
-        },
-        "endTime": {
-          "hour": _endTime.hour,
-          "minute": _endTime.minute,
-        },
-        "tasks": _tasks,
-        "guestRange": _selectedGuestRange,
-        "budget": _selectedBudget,
-        "category": _selectedCategory,
-        "reminderMinutes": _selectedReminder,
-        "participants": _participants, // List of participant emails
-        "createdAt": FieldValue.serverTimestamp(),
-      });
+        // Call the createEvent method from your provider
+        String? eventId = await eventProvider.createEvent(
+          context: context,
+          name: _nameController.text.trim(),
+          description: _descriptionController.text.trim(),
+          location: _locationController.text.trim(),
+          selectedDate: _selectedDate,
+          startTime: _startTime,
+          endTime: _endTime,
+          tasks: _tasks,
+          selectedGuestRange: _selectedGuestRange,
+          selectedBudget: _selectedBudget,
+          selectedCategory: _selectedCategory,
+          selectedReminder: _selectedReminder,
+          participants: _participants,
+        );
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Event created successfully!')),
-      );
-      Navigator.pop(context);
-    } catch (e) {
-      print("Error saving event: $e");
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to create event: $e')),
-      );
+        if (eventId != null) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Event created successfully!')),
+          );
+          Navigator.pop(context);
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Failed to create event.')),
+          );
+        }
+      } catch (e) {
+        print("Error creating event: $e");
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to create event: $e')),
+        );
+      }
     }
   }
-}
 
   @override
   Widget build(BuildContext context) {
