@@ -65,11 +65,13 @@ class AuthProvider with ChangeNotifier {
         await FirebaseFirestore.instance.collection('users').doc(_user!.uid).set({
           "email": email,
           "created_at": DateTime.now(),
-          'eventsParticipating': [],
-          'eventsCreated': [],
-          'photoURL': '',
-          'name': '',
-          'status': false
+          "status": false,
+          "eventsCreated": [],
+          "eventsParticipating": [],
+          "photoURL": null,
+          "role": [],
+          "preferedBudget": null,
+          "preferedCategory": [],
         });
         // Fetch the user data after signing up
         await _fetchUserData(_user!.uid);
@@ -130,10 +132,40 @@ class AuthProvider with ChangeNotifier {
       if (userDoc.exists) {
         // Convert Firestore data to UserModel and update provider
         _userData = UserModel.fromFirestore(userDoc.data() as Map<String, dynamic>);
+        // print(_userData!.email);
+        // print(_userData!.status);
       }
     } catch (e) {
       debugPrint("Error fetching user data: $e");
     }
     notifyListeners();
   }
+
+
+// save data from onboarding
+Future<void> saveOnboardingData({ List<String>? role, String? preferedBudget, List<String>? preferedCategory }) async {
+  
+  if (_user == null) {
+    throw Exception("User not authenticated");
+  }
+
+  try {
+    await FirebaseFirestore.instance.collection('users').doc(_user!.uid).update({
+      'role': role,
+      'preferedBudget': preferedBudget,
+      'preferedCategory': preferedCategory,
+      'status': true
+    });
+    // Fetch the user data after signing up
+    await _fetchUserData(_user!.uid);
+  } catch (e) {
+    debugPrint("Error saving user data: $e");
+    throw Exception("Failed to save user data");
+  }
 }
+
+}
+
+
+
+

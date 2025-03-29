@@ -8,6 +8,10 @@ class UserModel {
   final bool status;
   final List<String> eventsCreated;
   final List<String> eventsParticipating;
+  final String preferedBudget;
+  final List<String> preferedEvents;
+  final List<String> role;
+
 
   UserModel({
     required this.email,
@@ -16,7 +20,10 @@ class UserModel {
     required this.photoURL,
     required this.status,
     required this.eventsCreated, 
-    required this.eventsParticipating
+    required this.eventsParticipating,
+    required this.preferedBudget,
+    required this.preferedEvents,
+    required this.role
   });
 
   // You can create a method to convert Firestore data into this model.
@@ -29,6 +36,9 @@ class UserModel {
       status: data['status'] ?? false,
       eventsCreated: List<String>.from(data['eventsCreated'] ?? []),
       eventsParticipating: List<String>.from(data['eventsParticipating'] ?? []),
+      preferedBudget: data['preferedBudget'] ?? '',
+      preferedEvents: List<String>.from(data['preferedEvents'] ?? []),
+      role: List<String>.from(data['role'] ?? [])
     );
   }
 }
