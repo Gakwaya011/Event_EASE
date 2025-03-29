@@ -55,8 +55,6 @@ class AuthProvider with ChangeNotifier {
 }
 
   // ✅ Google Sign-In
-
-
 Future<bool> signInWithGoogle() async {
   try {
     final GoogleSignIn googleSignIn = GoogleSignIn(
@@ -81,7 +79,7 @@ Future<bool> signInWithGoogle() async {
     _user = FirebaseAuth.instance.currentUser;
     debugPrint("User signed in: ${_user?.email}");
     notifyListeners();
-    
+
     return true;
   } catch (e) {
     debugPrint("Google sign-in error: $e");
