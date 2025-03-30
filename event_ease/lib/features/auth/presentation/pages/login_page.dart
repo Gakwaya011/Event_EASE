@@ -1,8 +1,8 @@
-import 'package:event_ease/core/providers/auth_provider.dart';
+import 'package:event_ease/core/providers/auth_provider.dart' as local_auth;
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
-//import '../widgets/custom_textfield.dart';
 import '../widgets/google_signin_button.dart';
 
 class LoginPage extends StatefulWidget {
@@ -15,14 +15,53 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+  final TextEditingController phoneController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
-  String? errorMessage;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
 
+  String? errorMessage;
   bool isLoading = false;
+
+  Future<void> _sendOTP() async {
+    String phoneNumber = phoneController.text.trim();
+    if (phoneNumber.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Enter a valid phone number")),
+      );
+      return;
+    }
+
+    setState(() {
+      isLoading = true;
+    });
+
+    await _auth.verifyPhoneNumber(
+      phoneNumber: phoneNumber,
+      verificationCompleted: (PhoneAuthCredential credential) async {
+        await _auth.signInWithCredential(credential);
+      },
+      verificationFailed: (FirebaseAuthException e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Verification failed: ${e.message}")),
+        );
+        setState(() {
+          isLoading = false;
+        });
+      },
+      codeSent: (String verificationId, int? resendToken) {
+        setState(() {
+          isLoading = false;
+        });
+        context.go('/otp', extra: verificationId);
+      },
+      codeAutoRetrievalTimeout: (String verificationId) {},
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
-    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+    final authProvider = Provider.of<local_auth.AuthProvider>(context);
+ 
 
     return Scaffold(
       body: Container(
@@ -30,11 +69,7 @@ class _LoginPageState extends State<LoginPage> {
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            colors: [
-              Colors.white,
-              Color(0xFFFFF2D6),
-              Color(0xFFFFE4B3),
-            ],
+            colors: [Colors.white, Color(0xFFFFF2D6), Color(0xFFFFE4B3)],
           ),
         ),
         child: Center(
@@ -47,7 +82,6 @@ class _LoginPageState extends State<LoginPage> {
                 children: [
                   Image.asset('assets/event_ease_logo.png', height: 100),
                   const SizedBox(height: 20),
-
                   const Text(
                     "Welcome to Event Ease",
                     style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
@@ -59,7 +93,7 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                   const SizedBox(height: 30),
 
-                   GoogleSignInButton(),
+                  GoogleSignInButton(),
                   const SizedBox(height: 10),
                   const Text("Or", style: TextStyle(fontSize: 14, color: Colors.grey)),
                   const SizedBox(height: 10),
@@ -67,10 +101,10 @@ class _LoginPageState extends State<LoginPage> {
                   // Email Input
                   TextFormField(
                     controller: emailController,
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       labelText: "Email",
                       border: OutlineInputBorder(),
-                      prefixIcon: const Icon(Icons.email),
+                      prefixIcon: Icon(Icons.email),
                     ),
                     validator: (value) {
                       if (value == null || value.isEmpty) return 'Email is required';
@@ -86,10 +120,10 @@ class _LoginPageState extends State<LoginPage> {
                   TextFormField(
                     controller: passwordController,
                     obscureText: true,
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       labelText: "Password",
                       border: OutlineInputBorder(),
-                      prefixIcon: const Icon(Icons.lock),
+                      prefixIcon: Icon(Icons.lock),
                     ),
                     validator: (value) {
                       if (value == null || value.isEmpty) return 'Password is required';
@@ -99,16 +133,43 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                   const SizedBox(height: 10),
 
+                  // Phone Number Input
+                  TextFormField(
+                    controller: phoneController,
+                    keyboardType: TextInputType.phone,
+                    decoration: const InputDecoration(
+                      labelText: "Phone Number",
+                      border: OutlineInputBorder(),
+                      prefixIcon: Icon(Icons.phone),
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+
+                  // Send OTP Button
+                  ElevatedButton(
+                    onPressed: _sendOTP,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.orange,
+                      foregroundColor: Colors.white,
+                      minimumSize: const Size(double.infinity, 50),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                    child: isLoading
+                        ? const CircularProgressIndicator(color: Colors.white)
+                        : const Text("Send OTP", style: TextStyle(fontSize: 16, color: Colors.white)),
+                  ),
+
+                  const SizedBox(height: 10),
+
                   // Error Message
                   if (errorMessage != null) ...[
-                    Text(
-                      errorMessage!,
-                      style: const TextStyle(color: Colors.red),
-                    ),
+                    Text(errorMessage!, style: const TextStyle(color: Colors.red)),
                     const SizedBox(height: 10),
                   ],
 
-                  // Login Button
+                  // Email/Password Login Button
                   ElevatedButton(
                     onPressed: () async {
                       if (_formKey.currentState!.validate()) {
@@ -116,13 +177,16 @@ class _LoginPageState extends State<LoginPage> {
                           isLoading = true;
                           errorMessage = null;
                         });
+
                         bool success = await authProvider.signInWithEmail(
                           emailController.text.trim(),
                           passwordController.text.trim(),
                         );
+
                         setState(() {
                           isLoading = false;
                         });
+
                         if (success) {
                           context.go('/dashboard');
                         } else {

@@ -1,22 +1,27 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:go_router/go_router.dart';
 
 class OTPConfirmationPage extends StatefulWidget {
-  const OTPConfirmationPage({super.key});
+  final String verificationId;
+
+  const OTPConfirmationPage({super.key, required this.verificationId});
 
   @override
   _OTPConfirmationPageState createState() => _OTPConfirmationPageState();
 }
 
 class _OTPConfirmationPageState extends State<OTPConfirmationPage> {
-  final List<TextEditingController> _otpControllers = 
+  final List<TextEditingController> _otpControllers =
       List.generate(6, (_) => TextEditingController());
   final List<FocusNode> _focusNodes = List.generate(6, (_) => FocusNode());
+  bool _isVerifying = false;
+  String? _errorMessage;
 
   @override
   void initState() {
     super.initState();
-    // Add listener to handle pasting entire OTP
     _otpControllers[0].addListener(_handlePastedOTP);
   }
 
@@ -33,32 +38,49 @@ class _OTPConfirmationPageState extends State<OTPConfirmationPage> {
 
   void _handlePastedOTP() {
     String pastedText = _otpControllers[0].text;
-    
-    // Check if pasted text is exactly 6 digits
     if (pastedText.length == 6 && int.tryParse(pastedText) != null) {
-      // Distribute pasted OTP across input fields
       for (int i = 0; i < 6; i++) {
         _otpControllers[i].text = pastedText[i];
       }
-      // Move focus to last field
       FocusScope.of(context).requestFocus(_focusNodes[5]);
+      _verifyOTP();
     }
   }
 
   void _onOTPChanged(int index, String value) {
-    if (value.length == 1) {
-      // Move focus to next input
-      if (index < 5) {
-        FocusScope.of(context).requestFocus(_focusNodes[index + 1]);
-      }
+    if (value.length == 1 && index < 5) {
+      FocusScope.of(context).requestFocus(_focusNodes[index + 1]);
+    }
+    if (_otpControllers.every((controller) => controller.text.isNotEmpty)) {
+      _verifyOTP();
     }
   }
 
-  void _sendOTP() {
-    // Implement OTP verification logic here
+  Future<void> _verifyOTP() async {
+    setState(() {
+      _isVerifying = true;
+      _errorMessage = null;
+    });
+
     String otpCode = _otpControllers.map((controller) => controller.text).join();
-    print('Entered OTP: $otpCode');
-    // Add your verification logic
+
+    try {
+      PhoneAuthCredential credential = PhoneAuthProvider.credential(
+        verificationId: widget.verificationId,
+        smsCode: otpCode,
+      );
+
+      await FirebaseAuth.instance.signInWithCredential(credential);
+
+      // Navigate to the next screen (e.g., home page)
+      context.go('/dashboard'); // ✅ This ensures correct navigation
+
+    } on FirebaseAuthException {
+      setState(() {
+        _errorMessage = "Invalid OTP. Please try again.";
+        _isVerifying = false;
+      });
+    }
   }
 
   @override
@@ -69,11 +91,7 @@ class _OTPConfirmationPageState extends State<OTPConfirmationPage> {
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            colors: [
-              Colors.white,
-              Color(0xFFFFF2D6),
-              Color(0xFFFFE4B3),
-            ],
+            colors: [Colors.white, Color(0xFFFFF2D6), Color(0xFFFFE4B3)],
           ),
         ),
         child: SafeArea(
@@ -82,7 +100,6 @@ class _OTPConfirmationPageState extends State<OTPConfirmationPage> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                // Verification Badge
                 Container(
                   width: 120,
                   height: 120,
@@ -91,35 +108,22 @@ class _OTPConfirmationPageState extends State<OTPConfirmationPage> {
                     shape: BoxShape.circle,
                   ),
                   child: Center(
-                    child: Icon(
-                      Icons.check,
-                      color: Colors.white,
-                      size: 80,
-                    ),
+                    child: Icon(Icons.check, color: Colors.white, size: 80),
                   ),
                 ),
                 SizedBox(height: 30),
-                
-                // Title
                 Text(
                   'Confirm OTP',
-                  style: TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                 ),
                 SizedBox(height: 10),
-                
-                // Subtitle
                 Text(
-                  'The OTP was sent to your email, please enter the code below to sign in',
+                  'Enter the OTP sent to your phone number',
                   textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: Colors.grey,
-                  ),
+                  style: TextStyle(color: Colors.grey),
                 ),
                 SizedBox(height: 30),
-                
+
                 // OTP Input Fields
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -147,34 +151,40 @@ class _OTPConfirmationPageState extends State<OTPConfirmationPage> {
                           ),
                         ),
                         onChanged: (value) => _onOTPChanged(index, value),
-                        inputFormatters: [
-                          FilteringTextInputFormatter.digitsOnly
-                        ],
+                        inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                       ),
                     );
                   }),
                 ),
+                SizedBox(height: 15),
+
+                // Error Message
+                if (_errorMessage != null)
+                  Text(
+                    _errorMessage!,
+                    style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
+                  ),
+
                 SizedBox(height: 30),
-                
+
                 // Send Button
                 SizedBox(
                   width: double.infinity,
                   height: 60,
                   child: ElevatedButton(
-                    onPressed: _sendOTP,
+                    onPressed: _isVerifying ? null : _verifyOTP,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.orange[600],
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(15),
                       ),
                     ),
-                    child: Text(
-                      'Send',
-                      style: TextStyle(
-                        fontSize: 18,
-                        color: Colors.white,
-                      ),
-                    ),
+                    child: _isVerifying
+                        ? CircularProgressIndicator(color: Colors.white)
+                        : Text(
+                            'Verify OTP',
+                            style: TextStyle(fontSize: 18, color: Colors.white),
+                          ),
                   ),
                 ),
               ],

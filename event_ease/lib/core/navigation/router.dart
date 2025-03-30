@@ -25,9 +25,16 @@ final GoRouter router = GoRouter(
       builder: (context, state) => const SignupPage(),
     ),
     GoRoute(
-      path: '/otp',
-      builder: (context, state) => const OTPConfirmationPage(),
-    ),
+  path: '/otp',
+  builder: (context, state) {
+    final verificationId = state.extra as String?; // Extract verificationId
+    if (verificationId == null) {
+      return const LoginPage(); // Redirect to login if verificationId is missing
+    }
+    return OTPConfirmationPage(verificationId: verificationId);
+  },
+),
+
     GoRoute(
       path: '/profile',
       builder: (context, state) => const ProfilePage(),
