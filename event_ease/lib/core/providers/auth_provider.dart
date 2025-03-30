@@ -181,8 +181,58 @@ void updateUserEvents(List<String> eventIds) {
     }
   }
 
+
+// Update user data in Firestore and local state
+Future<void> updateUserData({
+  String? name,
+  String? email,
+  List<String>? role,
+  String? preferedBudget,
+  List<String>? preferedCategory,
+}) async {
+  if (_user == null) {
+    throw Exception("User not authenticated");
+  }
+
+  try {
+    // Prepare the update map
+    Map<String, dynamic> updatedData = {
+      if (name != null) 'name': name,
+      if (email != null) 'email': email,
+      if (role != null) 'role': role,
+      if (preferedBudget != null) 'preferedBudget': preferedBudget,
+      if (preferedCategory != null) 'preferedCategory': preferedCategory,
+    };
+
+    // Update Firestore
+    await FirebaseFirestore.instance.collection('users').doc(_user!.uid).update(updatedData);
+
+    // Update local userData state
+    if (_userData != null) {
+      _userData = _userData!.copyWith(
+        name: name ?? _userData!.name,
+        email: email ?? _userData!.email,
+        role: role ?? _userData!.role,
+        preferedBudget: preferedBudget ?? _userData!.preferedBudget,
+        preferedCategory: preferedCategory ?? _userData!.preferedCategory,
+      );
+    }
+
+    notifyListeners();
+  } catch (e) {
+    debugPrint("Error updating user data: $e");
+    throw Exception("Failed to update user data");
+  }
 }
 
 
 
 
+
+
+
+
+
+
+
+}

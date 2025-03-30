@@ -9,9 +9,8 @@ class UserModel {
   final List<String> eventsCreated;
   final List<String> eventsParticipating;
   final String preferedBudget;
-  final List<String> preferedEvents;
+  final List<String> preferedCategory;
   final List<String> role;
-
 
   UserModel({
     required this.email,
@@ -19,14 +18,14 @@ class UserModel {
     required this.createdAt,
     required this.photoURL,
     required this.status,
-    required this.eventsCreated, 
+    required this.eventsCreated,
     required this.eventsParticipating,
     required this.preferedBudget,
-    required this.preferedEvents,
-    required this.role
+    required this.preferedCategory,
+    required this.role,
   });
 
-  // You can create a method to convert Firestore data into this model.
+  // Factory method to convert Firestore data to UserModel
   factory UserModel.fromFirestore(Map<String, dynamic> data) {
     return UserModel(
       email: data['email'] ?? '',
@@ -36,9 +35,36 @@ class UserModel {
       status: data['status'] ?? false,
       eventsCreated: List<String>.from(data['eventsCreated'] ?? []),
       eventsParticipating: List<String>.from(data['eventsParticipating'] ?? []),
-      preferedBudget: data['preferedBudget'] ?? '',
-      preferedEvents: List<String>.from(data['preferedEvents'] ?? []),
-      role: List<String>.from(data['role'] ?? [])
+      preferedBudget: (data['preferedBudget'] as String?) ?? '',
+      preferedCategory: List<String>.from(data['preferedCategory'] ?? []),
+      role: List<String>.from(data['role'] ?? []),
+    );
+  }
+
+  // CopyWith method to create a new instance with updated fields
+  UserModel copyWith({
+    String? email,
+    String? name,
+    DateTime? createdAt,
+    String? photoURL,
+    bool? status,
+    List<String>? eventsCreated,
+    List<String>? eventsParticipating,
+    String? preferedBudget,
+    List<String>? preferedCategory,
+    List<String>? role,
+  }) {
+    return UserModel(
+      email: email ?? this.email,
+      name: name ?? this.name,
+      createdAt: createdAt ?? this.createdAt,
+      photoURL: photoURL ?? this.photoURL,
+      status: status ?? this.status,
+      eventsCreated: eventsCreated ?? this.eventsCreated,
+      eventsParticipating: eventsParticipating ?? this.eventsParticipating,
+      preferedBudget: preferedBudget ?? this.preferedBudget,
+      preferedCategory: preferedCategory ?? this.preferedCategory,
+      role: role ?? this.role,
     );
   }
 }
