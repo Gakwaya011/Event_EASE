@@ -31,7 +31,7 @@ git clone https://github.com/yourusername/eventease.git
 
 2. Navigate to the Project Directory
 
-git clone https://github.com/yourusername/eventease.git
+cd eventease
 
 3. Install Dependencies:
 
