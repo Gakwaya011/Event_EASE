@@ -171,7 +171,6 @@ Future<void> saveOnboardingData({ List<String>? role, String? preferedBudget, Li
 // Update user's events list
 void updateUserEvents(List<String> eventIds) {
     if (currentUser != null) {
-      print('Updating user events: $eventIds');
       // Update the local state
       userData?.eventsCreated.addAll(eventIds);
       userData?.eventsParticipating.addAll(eventIds);
