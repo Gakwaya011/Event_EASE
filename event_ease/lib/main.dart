@@ -12,6 +12,7 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   if (kIsWeb) {
+    //
     // ✅ Web requires FirebaseOptions
     await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   } else {
