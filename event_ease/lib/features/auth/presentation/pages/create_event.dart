@@ -22,7 +22,7 @@ class _CreateEventPageState extends State<CreateEventPage> {
   final TextEditingController _participantController = TextEditingController();
   DateTime _selectedDate = DateTime.now();
   TimeOfDay _startTime = TimeOfDay.now();
-  TimeOfDay _endTime = TimeOfDay.now().replacing(hour: TimeOfDay.now().hour + 2);
+  TimeOfDay _endTime = TimeOfDay.now().replacing(hour: TimeOfDay.now().hour);
   
   // For tasks
   final List<TaskModel> _tasks = [];

@@ -4,7 +4,6 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:event_ease/core/providers/event_provider.dart';
-import 'package:event_ease/core/models/event_model.dart';
 import 'package:event_ease/features/auth/presentation/widgets/bottom_bar.dart';
 import '../widgets/dashboard/map_categories.dart';
 
