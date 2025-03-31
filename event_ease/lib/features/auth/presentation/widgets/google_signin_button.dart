@@ -1,8 +1,8 @@
 // lib/widgets/google_signin_button.dart
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '/../core/providers/auth_provider.dart';
+import 'package:go_router/go_router.dart';
 
 class GoogleSignInButton extends StatelessWidget {
   const GoogleSignInButton({super.key});
@@ -11,7 +11,30 @@ class GoogleSignInButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return ElevatedButton.icon(
       onPressed: () async {
-        await Provider.of<AuthProvider>(context, listen: false).signInWithGoogle();
+        final authProvider = Provider.of<AuthProvider>(context, listen: false);
+        
+        // Show loading indicator until Google sign-in is complete
+        showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (context) => const Center(child: CircularProgressIndicator()),
+        );
+
+        bool success = await authProvider.signInWithGoogle();
+        
+        if (success) {
+          // Close the loading dialog
+          if (Navigator.canPop(context)) Navigator.pop(context);
+
+          // Navigate to the Dashboard after successful sign-in
+          context.push('/dashboard');  // Navigate to Dashboard page
+        } else {
+          // Close the loading dialog and show failure message
+          if (Navigator.canPop(context)) Navigator.pop(context);
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Google sign-in failed. Please try again.')),
+          );
+        }
       },
       icon: Image.asset(
         'assets/google.png',

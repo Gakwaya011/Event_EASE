@@ -1,19 +1,6 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <!--
-    If you are serving your web app in a path other than the root, change the
-    href value below to reflect the base path you are serving from.
-
-    The path provided below has to start and end with a slash "/" in order for
-    it to work correctly.
-
-    For more details:
-    * https://developer.mozilla.org/en-US/docs/Web/HTML/Element/base
-
-    This is a placeholder for base href that will be replaced by the value of
-    the `--base-href` argument provided to `flutter build`.
-  -->
   <base href="$FLUTTER_BASE_HREF">
 
   <meta charset="UTF-8">
@@ -24,6 +11,9 @@
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
   <meta name="apple-mobile-web-app-title" content="event_ease">
+  <meta name="google-signin-client_id" content="335284132892-suvld18m3qbqvvadvin2tt5t9es99c11.apps.googleusercontent.com">
+
+
   <link rel="apple-touch-icon" href="icons/Icon-192.png">
 
   <!-- Favicon -->
@@ -31,8 +21,49 @@
 
   <title>event_ease</title>
   <link rel="manifest" href="manifest.json">
+
+  <!-- Load Google Identity Services (GIS) for authentication -->
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+
+  <!-- Load Google API Client Library -->
+  <script src="https://apis.google.com/js/api.js" async defer></script>
+
 </head>
 <body>
+
+  <!-- Google Sign-In Button -->
+  <div id="g_id_onload"
+       data-client_id="335284132892-suvld18m3qbqvvadvin2tt5t9es99c11.apps.googleusercontent.com"
+       data-callback="handleCredentialResponse">
+  </div>
+
+  <div class="g_id_signin" data-type="standard"></div>
+
+  <!-- Flutter Bootstrap Script -->
   <script src="flutter_bootstrap.js" async></script>
+
+  <script>
+    function initClient() {
+      gapi.load('client', () => {
+        gapi.client.init({
+          clientId: '335284132892-suvld18m3qbqvvadvin2tt5t9es99c11.apps.googleusercontent.com',
+          scope: 'email profile',
+        }).then(() => {
+          console.log('GAPI Client Initialized');
+        }).catch(error => {
+          console.error('Error initializing GAPI Client:', error);
+        });
+      });
+    }
+
+    function handleCredentialResponse(response) {
+      console.log("Encoded JWT ID token: " + response.credential);
+      // Send the ID token to your backend for verification
+    }
+  </script>
+
+  <!-- Initialize the Google API Client -->
+  <script async defer src="https://apis.google.com/js/api.js" onload="initClient()"></script>
+
 </body>
 </html>
