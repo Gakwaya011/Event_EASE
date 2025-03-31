@@ -1,17 +1,18 @@
-# Event_EASE
+### Event_EASE
 
-EventEase
-Overview
+## Overview
 EventEase is an AI-powered platform designed to simplify event planning for individuals and small-scale organizers. With a user-friendly interface built using Flutter for the frontend and Firebase for the backend, EventEase streamlines vendor management, budget tracking, and collaboration to create memorable community events.
 
-Features
-AI-Powered Vendor Matching: Connects users with local vendors tailored to their needs.
-Budget Management: Tools for real-time expense tracking and budget adherence.
-Timeline and Task Management: Create timelines, assign tasks, and set reminders.
-Collaboration Tools: Seamless communication among team members and vendors.
-Resource Library: Access to templates and guides for various events.
-Feedback System: Rate and review vendors for informed decision-making.
-Technologies Used
+## Features
+# AI-Powered Vendor Matching: Connects users with local vendors tailored to their needs.
+# Budget Management: Tools for real-time expense tracking and budget adherence.
+# Timeline and Task Management: Create timelines, assign tasks, and set reminders.
+# Collaboration Tools: Seamless communication among team members and vendors.
+# Resource Library: Access to templates and guides for various events.
+# Feedback System: Rate and review vendors for informed decision-making.
+
+## Technologies Used
+
 Frontend: Flutter
 Backend: Firebase
 Getting Started
