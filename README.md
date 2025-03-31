@@ -14,63 +14,35 @@ EventEase is an AI-powered platform designed to simplify event planning for indi
 ## Technologies Used
 
 Frontend: Flutter
+
 Backend: Firebase
 
 ## Getting Started
 
 ### Prerequisites
 Flutter SDK
+
 Firebase account
 
 ## Installation
 1. Clone the Repository:
-bash
-[git clone https://github.com/yourusername/eventease.git](git clone https://github.com/yourusername/eventease.git)
+
+[git clone https://github.com/yourusername/eventease.git]
 
 2. Navigate to the Project Directory
-Copy
-git clone https://github.com/yourusername/eventease.git
 
+[git clone https://github.com/yourusername/eventease.git]
 
-Copy
-git clone https://github.com/yourusername/eventease.git
-Navigate to the Project Directory:
-bash
+3. Install Dependencies:
 
-Copy
-cd eventease
-Install Dependencies:
-bash
-
-Copy
 flutter pub get
-Configure Firebase:
-Create a new Firebase project.
-Add your app to the project.
-Download the google-services.json file and place it in the android/app directory.
-Follow Firebase setup instructions for Flutter.
-Run the App:
-bash
 
-Copy
+## Configure Firebase:
+1. Create a new Firebase project.
+2. Add your app to the project.
+3 .Download the google-services.json file and place it in the android/app directory.
+4. Follow Firebase setup instructions for Flutter.
+
+## Run the App:
+
 flutter run
-Contributing
-We welcome contributions! Please follow these steps to contribute:
-
-Fork the repository.
-Create a new branch:
-bash
-
-Copy
-git checkout -b feature/YourFeature
-Make your changes and commit them:
-bash
-
-Copy
-git commit -m "Add your feature"
-Push to the branch:
-bash
-
-Copy
-git push origin feature/YourFeature
-Create a pull request.
