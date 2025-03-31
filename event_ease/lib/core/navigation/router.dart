@@ -12,6 +12,8 @@ import '../../features/auth/presentation/pages/create_event.dart';
 import '../../features/auth/presentation/pages/splash.dart';
 import '../../features/auth/presentation/pages/onboarding.dart';
 import '../../features/auth/presentation/pages/edit_event.dart';
+import '../../features/auth/presentation/pages/all_events.dart';
+
 
 // import the providers
 import 'package:provider/provider.dart';
@@ -53,6 +55,10 @@ final GoRouter router = GoRouter(
         String eventId = state.pathParameters['eventId']!;
         return SinglEvent(eventId: eventId);
       },
+    ),
+    GoRoute(
+      path: '/all_events',
+      builder: (context, state) => const AllEventsPage(),
     ),
     GoRoute(
       path: '/edit_event/:eventId',

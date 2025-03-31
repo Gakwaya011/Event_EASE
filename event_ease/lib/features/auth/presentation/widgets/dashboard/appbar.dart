@@ -88,7 +88,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
   return Scaffold(
     backgroundColor: Colors.white,
     appBar: AppBar(
-      backgroundColor: Colors.amber,
+      backgroundColor: Colors.amber[300],
       title: const Text('Notifications'),
       leading: IconButton(
         icon: const Icon(Icons.arrow_back),
