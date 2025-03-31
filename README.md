@@ -27,11 +27,11 @@ Firebase account
 ## Installation
 1. Clone the Repository:
 
-[git clone https://github.com/yourusername/eventease.git]
+git clone https://github.com/yourusername/eventease.git
 
 2. Navigate to the Project Directory
 
-[git clone https://github.com/yourusername/eventease.git]
+git clone https://github.com/yourusername/eventease.git
 
 3. Install Dependencies:
 
