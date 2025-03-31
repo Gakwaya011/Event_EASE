@@ -4,7 +4,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:provider/provider.dart';
 import 'core/navigation/router.dart';
-import 'core/providers/auth_provider.dart' as local_auth; // ✅ Add alias
+import 'core/providers/auth_provider.dart' as local_auth; 
 import 'firebase_options.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 
