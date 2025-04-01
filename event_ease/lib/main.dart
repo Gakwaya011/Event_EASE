@@ -41,10 +41,10 @@ Future<void> main() async {
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
   // Request notification permission
-  await requestPermission();
+  // await requestPermission();
 
   // Get FCM token
-  await getFCMToken();
+  // await getFCMToken();
 
   runApp(
     MultiProvider(

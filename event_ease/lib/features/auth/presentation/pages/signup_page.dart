@@ -21,6 +21,9 @@ class _SignupPageState extends State<SignupPage> {
 
   bool isLoading = false;
   String? errorMessage;
+  bool _obscurePassword = true; 
+  bool _obscureConfirmPassword = true; 
+
 
   @override
   void dispose() {
@@ -127,17 +130,33 @@ class _SignupPageState extends State<SignupPage> {
                       CustomTextField(
                         hintText: "Password",
                         icon: Icons.lock,
-                        obscureText: true,
+                        obscureText: _obscurePassword,
                         controller: passwordController,
+                        suffixIcon: IconButton(
+                          icon: Icon(_obscurePassword ? Icons.visibility : Icons.visibility_off),
+                            onPressed: () {
+                              setState(() {
+                                _obscurePassword = !_obscurePassword;
+                              });
+                            },
+                        ),
                         validator: (value) => value == null || value.length < 6 ? "Password must be at least 6 characters" : null,
                       ),
                       const SizedBox(height: 10),
 
                       CustomTextField(
                         controller: confirmPasswordController,
-                        obscureText: true,
+                        obscureText: _obscureConfirmPassword,
                         hintText: "Confirm Password",
                         icon: Icons.lock,
+                        suffixIcon: IconButton(
+                          icon: Icon(_obscureConfirmPassword ? Icons.visibility : Icons.visibility_off),
+                            onPressed: () {
+                              setState(() {
+                                _obscureConfirmPassword = !_obscureConfirmPassword;
+                              });
+                            },
+                        ),
                         validator: (value) {
                           if (value == null || value.isEmpty) return "Please confirm your password";
                           return null;

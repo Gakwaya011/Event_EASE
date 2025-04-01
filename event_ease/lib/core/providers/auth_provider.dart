@@ -55,6 +55,17 @@ class AuthProvider with ChangeNotifier {
     }
   }
 
+
+  Future<void> resetPassword(String email) async {
+    try {
+      await _auth.sendPasswordResetEmail(email: email);
+      print("Password reset email sent.");
+    } on FirebaseAuthException catch (e) {
+      print("Error: $e");
+    }
+  }
+
+
   // Sign up with Email & Password
   Future<bool> signUpWithEmail(String email, String password) async {
     try {

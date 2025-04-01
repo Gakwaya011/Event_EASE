@@ -20,6 +20,8 @@ class _LoginPageState extends State<LoginPage> {
   String? errorMessage;
 
   bool isLoading = false;
+  bool _obscurePassword = true; 
+
 
   @override
   void initState() {
@@ -100,11 +102,33 @@ class _LoginPageState extends State<LoginPage> {
                   CustomTextField(
                     hintText: "Password",
                     icon: Icons.lock,
-                    obscureText: true,
+                    obscureText: _obscurePassword,
+                    suffixIcon: IconButton(
+                      icon: Icon(_obscurePassword ? Icons.visibility : Icons.visibility_off),
+                        onPressed: () {
+                          setState(() {
+                            _obscurePassword = !_obscurePassword;
+                          });
+                        },
+                    ),
                     controller: passwordController,
                     validator: (value) => value == null || value.length < 6 ? "Password must be at least 6 characters" : null,
                   ),
+
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: TextButton(
+                      onPressed: () {
+                        context.go('/reset'); // Ensure this route exists in your router
+                      },
+                      child: const Text(
+                        "Forgot Password?",
+                        style: TextStyle(color: Colors.orange),
+                      ),
+                    ),
+                  ),
                   const SizedBox(height: 10),
+
 
                   // Error Message
                   if (errorMessage != null) ...[
@@ -114,6 +138,7 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                     const SizedBox(height: 10),
                   ],
+
 
                   // Login Button
                   ElevatedButton(

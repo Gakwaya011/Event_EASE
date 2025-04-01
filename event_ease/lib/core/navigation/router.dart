@@ -13,6 +13,7 @@ import '../../features/auth/presentation/pages/splash.dart';
 import '../../features/auth/presentation/pages/onboarding.dart';
 import '../../features/auth/presentation/pages/edit_event.dart';
 import '../../features/auth/presentation/pages/all_events.dart';
+import '../../features/auth/presentation/pages/reset_password.dart';
 
 
 // import the providers
@@ -28,6 +29,10 @@ final GoRouter router = GoRouter(
     GoRoute(
       path: '/login',
       builder: (context, state) => const LoginPage(),
+    ),
+    GoRoute(
+      path: '/reset',
+      builder: (context,state) =>  ResetPasswordScreen(),
     ),
     GoRoute(
       path: '/signup',
