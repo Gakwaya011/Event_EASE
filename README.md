@@ -60,3 +60,7 @@ https://www.canva.com/design/DAGiuSuE0tw/SPP-1PWkBgT5R_jUS3R6DA/edit?utm_content
 3. Github Repository
 
 https://github.com/Gakwaya011/Event_EASE
+
+4. Figma Designs
+
+https://www.figma.com/design/XH573ASsJSvHLiKmWUaV7i/Ease?node-id=0-1&t=iGVP3bQOBfhqnfbF-1
