@@ -1,3 +1,4 @@
+// import 'package:event_ease/core/providers/auth_provider.dart' as local_auth;
 import 'package:event_ease/core/providers/auth_provider.dart';
 import 'package:event_ease/features/auth/presentation/widgets/custom_textfield.dart';
 import 'package:flutter/material.dart';
@@ -94,8 +95,13 @@ class _LoginPageState extends State<LoginPage> {
                     hintText: "Email",
                     icon: Icons.email,
                     controller: emailController,
-                    validator: (value) => value == null || !value.contains("@") ? "Enter a valid email" : null,
-                  ),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) return 'Email is required';
+                      if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w]{2,4}$').hasMatch(value)) {
+                        return 'Enter a valid email';
+                      }
+                      return null;
+                    },                  ),
                   const SizedBox(height: 10),
 
                   // Password Input
@@ -156,7 +162,7 @@ class _LoginPageState extends State<LoginPage> {
                           isLoading = false;
                         });
                         if (success) {
-                          context.go('/dashboard');
+                          context.go('/otp');
                         } else {
                           setState(() {
                             errorMessage = "Invalid email or password";

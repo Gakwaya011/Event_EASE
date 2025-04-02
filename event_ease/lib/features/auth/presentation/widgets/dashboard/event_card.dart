@@ -3,15 +3,21 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'map_categories.dart';
 import '../../../../../core/providers/event_provider.dart';
+import 'search_bar.dart';
 
 class MyEventsSection extends StatefulWidget {
-  const MyEventsSection({super.key});
+  final String searchQuery; // Accept search query
+
+  const MyEventsSection({super.key, required this.searchQuery});
 
   @override
   _MyEventsSectionState createState() => _MyEventsSectionState();
 }
 
 class _MyEventsSectionState extends State<MyEventsSection> {
+  String _searchQuery = ''; // Store search query
+
+
   @override
   void initState() {
     super.initState();
@@ -36,12 +42,27 @@ class _MyEventsSectionState extends State<MyEventsSection> {
           return Center(child: Text("No events found"));
         }
 
+        List<Map<String, dynamic>> filteredEvents = eventProvider.eventsParticipating
+            .where((event) => event['name']
+                .toString()
+                .toLowerCase()
+                .contains(_searchQuery.toLowerCase())) // Filter by search input
+            .toList();
+
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+             // SEARCH BAR
+            CustomSearchBar(
+              onSearchChanged: (query) {
+                setState(() {
+                  _searchQuery = query;
+                });
+              },
+            ),
             // Title Section
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+              padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 8.0),
               child: GestureDetector(
                 onTap: () => context.push('/all_events'), // Navigate to All Events Page
                 child: Row(
@@ -65,18 +86,20 @@ class _MyEventsSectionState extends State<MyEventsSection> {
             ),
 
             // Event Cards Section
-            SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: Row(
-                children: eventProvider.eventsParticipating.map((event) {
-                  return Padding(
-                    padding: const EdgeInsets.only(right: 12.0),
-                    child: _buildEventCard(context, event),
-                  );
-                }).toList(),
-              ),
-            ),
+            filteredEvents.isEmpty
+                ? Center(child: Text("No matching events"))
+                : SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    child: Row(
+                      children: filteredEvents.map((event) {
+                        return Padding(
+                          padding: const EdgeInsets.only(right: 12.0),
+                          child: _buildEventCard(context, event),
+                        );
+                      }).toList(),
+                    ),
+                  ),
           ],
         );
       },

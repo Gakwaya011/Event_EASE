@@ -85,7 +85,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
     // Use amber theme
     final amberTheme = ThemeData(
       appBarTheme: AppBarTheme(
-        backgroundColor: const Color(0xFFFFAD33),
+        backgroundColor: const Color.fromARGB(255, 244, 175, 71),
         foregroundColor: Colors.white,
       ),
       inputDecorationTheme: InputDecorationTheme(

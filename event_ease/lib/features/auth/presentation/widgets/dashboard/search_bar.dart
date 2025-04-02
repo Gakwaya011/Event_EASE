@@ -1,8 +1,9 @@
-
 import 'package:flutter/material.dart';
 
 class CustomSearchBar extends StatelessWidget {
-  const CustomSearchBar({super.key});
+  final Function(String) onSearchChanged; // Add a callback
+
+  const CustomSearchBar({super.key, required this.onSearchChanged});
 
   @override
   Widget build(BuildContext context) {
@@ -17,8 +18,9 @@ class CustomSearchBar extends StatelessWidget {
                 color: Colors.grey.withOpacity(0.1),
                 borderRadius: BorderRadius.circular(8),
               ),
-              child: const TextField(
-                decoration: InputDecoration(
+              child: TextField(
+                onChanged: onSearchChanged, // Send search input
+                decoration: const InputDecoration(
                   hintText: 'Search',
                   hintStyle: TextStyle(color: Colors.grey),
                   prefixIcon: Icon(Icons.search, color: Colors.grey),

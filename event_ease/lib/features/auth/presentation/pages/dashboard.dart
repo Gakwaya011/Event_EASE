@@ -18,6 +18,14 @@ class DashboardPage extends StatefulWidget {
 }
 
 class _DashboardPageState extends State<DashboardPage> {
+  String _searchQuery = ''; 
+
+  void _onSearchChanged(String query) { 
+    setState(() {
+      _searchQuery = query;
+    });
+  }
+
   @override
   void initState() {
     super.initState();
@@ -65,7 +73,7 @@ class _DashboardPageState extends State<DashboardPage> {
               CustomAppBar(),
               
               // Search Bar
-              CustomSearchBar(),
+              // CustomSearchBar(onSearchChanged: _onSearchChanged),
               
               Expanded(
                 child: SingleChildScrollView(
@@ -77,7 +85,7 @@ class _DashboardPageState extends State<DashboardPage> {
                         const SizedBox(height: 16),
                         
                         // My Events Section
-                        MyEventsSection(),
+                        MyEventsSection(searchQuery: _searchQuery),
                         
                         const SizedBox(height: 24),
                         

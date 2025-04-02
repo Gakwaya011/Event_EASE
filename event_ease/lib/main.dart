@@ -3,11 +3,12 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:permission_handler/permission_handler.dart'; // Add this import
 import 'package:provider/provider.dart';
-import 'core/providers/auth_provider.dart';
 import 'core/providers/event_provider.dart';
 import 'firebase_options.dart';
 import 'core/navigation/router.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
+import 'core/providers/auth_provider.dart' as local_auth; 
+import 'package:firebase_auth/firebase_auth.dart';
 
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   print("Handling background message: ${message.messageId}");
@@ -46,10 +47,13 @@ Future<void> main() async {
   // Get FCM token
   // await getFCMToken();
 
+  // ✅ Set Firebase Authentication language to English
+  FirebaseAuth.instance.setLanguageCode("en");
+
   runApp(
     MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => AuthProvider()),
+        ChangeNotifierProvider(create: (_) => local_auth.AuthProvider()), 
         ChangeNotifierProvider(create: (_) => EventProvider()),
       ],
       child: const MyApp(),

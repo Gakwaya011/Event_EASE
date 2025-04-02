@@ -14,6 +14,7 @@ import '../../features/auth/presentation/pages/onboarding.dart';
 import '../../features/auth/presentation/pages/edit_event.dart';
 import '../../features/auth/presentation/pages/all_events.dart';
 import '../../features/auth/presentation/pages/reset_password.dart';
+import '../../features/auth/presentation/pages/otp.dart';
 
 
 // import the providers
@@ -31,16 +32,16 @@ final GoRouter router = GoRouter(
       builder: (context, state) => const LoginPage(),
     ),
     GoRoute(
+      path: '/otp',
+      builder: (context, state) =>  OtpVerificationScreen(),
+    ),
+    GoRoute(
       path: '/reset',
       builder: (context,state) =>  ResetPasswordScreen(),
     ),
     GoRoute(
       path: '/signup',
       builder: (context, state) => const SignupPage(),
-    ),
-    GoRoute(
-      path: '/otp',
-      builder: (context, state) => const OTPConfirmationPage(),
     ),
     GoRoute(
       path: '/profile',
