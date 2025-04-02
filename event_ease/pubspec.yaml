@@ -55,6 +55,7 @@ dependencies:
   freezed: ^2.4.7
   google_fonts: ^6.2.1
   image_picker: ^1.0.7
+  shared_preferences: ^2.5.3
   
 
 # For information on the generic Dart part of this file, see the
