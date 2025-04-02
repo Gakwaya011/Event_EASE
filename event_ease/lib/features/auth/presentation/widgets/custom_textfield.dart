@@ -5,7 +5,9 @@ class CustomTextField extends StatelessWidget {
   final IconData icon;
   final bool obscureText;
   final TextEditingController controller;
-  final String? Function(String?)? validator; // ✅ Add validator
+  final String? Function(String?)? validator; 
+  final Widget? suffixIcon;
+
 
   const CustomTextField({
     super.key,
@@ -13,7 +15,8 @@ class CustomTextField extends StatelessWidget {
     required this.icon,
     this.obscureText = false,
     required this.controller,
-    this.validator, // ✅ Make validator optional
+    this.validator, 
+    this.suffixIcon, 
   });
 
   @override
@@ -23,8 +26,11 @@ class CustomTextField extends StatelessWidget {
       obscureText: obscureText,
       decoration: InputDecoration(
         prefixIcon: Icon(icon),
+        suffixIcon: suffixIcon,
         hintText: hintText,
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide(color: Colors.grey.shade600)),
+        enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide(color: Colors.grey.shade600)),
+        focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide(color: Colors.amber[800]!)),
       ),
       validator: validator, // ✅ Use validator here
     );

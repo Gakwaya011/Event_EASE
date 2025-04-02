@@ -25,7 +25,7 @@ android {
         applicationId = "com.example.event_ease"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
-        minSdkVersion(23)
+        minSdkVersion(19)
         targetSdkVersion(flutter.targetSdkVersion)
         versionCode = flutter.versionCode
         versionName = flutter.versionName
@@ -49,6 +49,8 @@ dependencies {
 
   // Firebase Auth SDK (add this if you plan to use Firebase Authentication)
     implementation("com.google.firebase:firebase-auth")
+    implementation 'com.google.firebase:firebase-messaging:30.3.1' // Use the latest version
+    
 
 
   // TODO: Add the dependencies for Firebase products you want to use

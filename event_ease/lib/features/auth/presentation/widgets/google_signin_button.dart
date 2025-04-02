@@ -17,7 +17,7 @@ class GoogleSignInButton extends StatelessWidget {
         showDialog(
           context: context,
           barrierDismissible: false,
-          builder: (context) => const Center(child: CircularProgressIndicator()),
+          builder: (context) => const Center(child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation(Colors.amber),)),
         );
 
         bool success = await authProvider.signInWithGoogle();

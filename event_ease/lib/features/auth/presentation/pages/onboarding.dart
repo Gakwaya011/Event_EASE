@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
+import 'package:event_ease/core/providers/auth_provider.dart';
 
 class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({super.key});
@@ -10,6 +12,33 @@ class OnboardingScreen extends StatefulWidget {
 
 class _OnboardingScreenState extends State<OnboardingScreen> {
   int _currentStep = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    // Check if the user is already authenticated on page load
+  Future.microtask(() => _checkAuthenticationStatus());
+  }
+
+  void _checkAuthenticationStatus() {
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+    // Delay checking if the provider is still loading
+    if (authProvider.isLoading) {
+      Future.delayed(Duration(milliseconds: 500), () => _checkAuthenticationStatus());
+      return;
+    }
+      
+      // Wait until the user data is fully  loaded
+    if (authProvider.isLoading) return;
+
+    // Redirect only if user is NOT authenticated
+    if (authProvider.userData == null) {
+      context.go('/login');
+    }
+    else if (authProvider.userData!.status == true) {
+      context.go('/dashboard');
+    }
+  }
   
   // Form values
   final Map<String, bool> _roleSelections = {
@@ -26,6 +55,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     'Weddings': false,
     'Corporate': false,
     'Meetings': false,
+    'Other': false,
   };
   
   String? _selectedBudget;
@@ -46,7 +76,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     }
   }
 
-  void _goToNextStep() {
+  void _goToNextStep() async {
     if (_currentStep < _stepsBuilders.length - 1) {
       setState(() {
         _currentStep++;
@@ -54,7 +84,12 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     } else {
       // On the last step and pressed "Finish"
       if (_acceptedTerms) {
-        // Navigate to the main app or home screen
+        final authProvider = Provider.of<AuthProvider>(context, listen: false);
+        await authProvider.saveOnboardingData(
+          role: _roleSelections.entries.where((entry) => entry.value).map((entry) => entry.key).toList(),
+          preferedBudget: _selectedBudget,
+          preferedCategory: _eventTypeSelections.entries.where((entry) => entry.value).map((entry) => entry.key).toList(),
+        );
         context.push('/dashboard');
       } else {
         // Show error that terms must be accepted
@@ -65,11 +100,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     }
   }
 
-  void _skipOnboarding() {
-    // Navigate to the main app or home screen
-    // Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomeScreen()));
-    print('Onboarding skipped, navigating to home screen');
-  }
 
   Widget _buildRoleSelectionStep() {
     return Padding(
@@ -397,19 +427,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                             onPressed: null,
                             child: const Text(''),
                           ),
-                    
-                    // Skip button (not shown on last step)
-                    _currentStep < _stepsBuilders.length - 1
-                        ? TextButton(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.grey.shade300,
-                            foregroundColor: Colors.black,
-                            padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20)
-                          ),
-                            onPressed: _skipOnboarding,
-                            child: const Text('Skip'),
-                          )
-                        : const SizedBox.shrink(),
                     
                     // Next/Finish button
                     ElevatedButton(

@@ -4,16 +4,20 @@ import '../widgets/bottom_bar.dart';
 import 'package:provider/provider.dart';
 import '../../../../../core/providers/event_provider.dart';
 import '../../../../core/models/task_model.dart';
+import '../../../../core/models/event_model.dart';
+import 'package:go_router/go_router.dart';
 
 
-class CreateEventPage extends StatefulWidget {
-  const CreateEventPage({super.key});
+class EditEventPage extends StatefulWidget {
+  final EventModel event;
+
+  const EditEventPage({super.key, required this.event});
 
   @override
-  _CreateEventPageState createState() => _CreateEventPageState();
+  _EditEventPageState createState() => _EditEventPageState();
 }
 
-class _CreateEventPageState extends State<CreateEventPage> {
+class _EditEventPageState extends State<EditEventPage> {
   bool isLoading = false; 
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _nameController = TextEditingController();
@@ -51,6 +55,24 @@ class _CreateEventPageState extends State<CreateEventPage> {
   
  // For participants
  final List<String> _participants = [];
+
+ @override
+void initState() {
+  super.initState();
+  _nameController.text = widget.event.title;
+  _descriptionController.text = widget.event.description;
+  _locationController.text = widget.event.location;
+  _selectedDate = widget.event.date;
+  _startTime = widget.event.startTime;
+  _endTime = widget.event.endTime;
+  _tasks.addAll(widget.event.tasks);
+  _selectedGuestRange = widget.event.guestRange;
+  _selectedBudget = widget.event.budget;
+  _selectedCategory = widget.event.category;
+  _selectedReminder = widget.event.reminder;
+  _participants.addAll(widget.event.participants);
+}
+
 
   @override
   void dispose() {
@@ -140,8 +162,9 @@ class _CreateEventPageState extends State<CreateEventPage> {
         final eventProvider = Provider.of<EventProvider>(context, listen: false);
 
         // Call the createEvent method from your provider
-        String? eventId = await eventProvider.createEvent(
+        bool success = await eventProvider.updateEvent(
           context: context,
+          eventId: widget.event.id,
           name: _nameController.text.trim(),
           description: _descriptionController.text.trim(),
           location: _locationController.text.trim(),
@@ -156,11 +179,11 @@ class _CreateEventPageState extends State<CreateEventPage> {
           participants: _participants,
         );
 
-        if (eventId != null) {
+        if (success) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Event created successfully!')),
+            const SnackBar(content: Text('Event updated successfully!')),
           );
-          Navigator.pop(context);
+          context.go('/single_event/${widget.event.id}');
         } else {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('Failed to create event.')),
@@ -204,7 +227,7 @@ class _CreateEventPageState extends State<CreateEventPage> {
           actions: [
             IconButton(
              icon: isLoading
-                ? const CircularProgressIndicator(color: Colors.amber) // Show loader
+                ? const CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Colors.amber)) // Show loader
                 : const Icon(Icons.check),
             onPressed: isLoading ? null : _saveEvent,
             ),

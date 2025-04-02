@@ -1,78 +1,52 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
+import 'package:event_ease/core/providers/event_provider.dart';
+import 'package:event_ease/core/models/event_model.dart';
+import 'package:event_ease/features/auth/presentation/widgets/bottom_bar.dart';
 
-void main() {
-  runApp(const SinglEvent());
-}
 
-class SinglEvent extends StatelessWidget {
-  const SinglEvent({super.key});
+class SinglEvent extends StatefulWidget {
+  final String eventId;
+
+  const SinglEvent({super.key, required this.eventId});
 
   @override
-  Widget build(BuildContext context) {
-    return EventDetailsPage(
-        event: EventModel(
-          title: "Kamila's Birthday",
-          date: DateTime(2024, 6, 15),
-          time: TimeOfDay(hour: 19, minute: 00),
-          location: "Sunset Ballroom, 123 Party Street",
-          description: "Join us for an unforgettable celebration of Kamila's special day! We'll have great food, music, and memories to last a lifetime.",
-          guests: 45,
-          budget: 5000,
-          tasks: [
-            TaskModel(title: "Book Venue", completed: true),
-            TaskModel(title: "Send Invitations", completed: false),
-            TaskModel(title: "Order Cake", completed: false),
-            TaskModel(title: "Arrange Catering", completed: true),
-          ],
-          invitedGuests: [
-            GuestModel(name: "John Doe", status: GuestStatus.confirmed),
-            GuestModel(name: "Jane Smith", status: GuestStatus.pending),
-            GuestModel(name: "Mike Johnson", status: GuestStatus.declined),
-          ],
-        ),
-      );
+  _SinglEventState createState() => _SinglEventState();
+}
+
+class _SinglEventState extends State<SinglEvent> {
+  
+@override
+Widget build(BuildContext context) {
+  final eventProvider = Provider.of<EventProvider>(context);
+
+  // If events are empty, fetch first (prevents null return)
+  if (eventProvider.events.isEmpty) {
+    return FutureBuilder(
+      future: eventProvider.fetchEventById(widget.eventId),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Colors.amber)));
+        }
+        final event = eventProvider.getEventById(widget.eventId);
+        if (event == null) {
+          return const Center(child: Text("Event not found!"));
+        }
+        return EventDetailsPage(event: event);
+      },
+    );
   }
+
+  // Fetch event normally
+  final event = eventProvider.getEventById(widget.eventId);
+  if (event == null) {
+    return const Center(child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Colors.amber)));
+  }
+
+  return EventDetailsPage(event: event);
 }
-
-enum GuestStatus { confirmed, pending, declined }
-
-class GuestModel {
-  final String name;
-  final GuestStatus status;
-
-  GuestModel({required this.name, required this.status});
-}
-
-class TaskModel {
-  final String title;
-  bool completed;
-
-  TaskModel({required this.title, this.completed = false});
-}
-
-class EventModel {
-  final String title;
-  final DateTime date;
-  final TimeOfDay time;
-  final String location;
-  final String description;
-  final int guests;
-  final double budget;
-  final List<TaskModel> tasks;
-  final List<GuestModel> invitedGuests;
-
-  EventModel({
-    required this.title,
-    required this.date,
-    required this.time,
-    required this.location,
-    required this.description,
-    required this.guests,
-    required this.budget,
-    required this.tasks,
-    required this.invitedGuests,
-  });
 }
 
 class EventDetailsPage extends StatefulWidget {
@@ -103,7 +77,7 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
                   const SizedBox(height: 24),
                   _buildTaskSection(),
                   const SizedBox(height: 24),
-                  _buildGuestList(),
+                  _buildParticipantsList(),
                   const SizedBox(height: 40),
                 ],
               ),
@@ -112,6 +86,7 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
         ],
       ),
       floatingActionButton: _buildFloatingActionButton(),
+      bottomNavigationBar: const CustomBottomBar(),
     );
   }
 
@@ -132,11 +107,7 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
         background: Stack(
           fit: StackFit.expand,
           children: [
-            Image.network(
-              'https://images.unsplash.com/photo-1519741497674-611481b9c1d7',
-              fit: BoxFit.cover,
-              errorBuilder: (context, error, stackTrace) {
-                return Container(
+            Container(
                   color: Colors.amber.shade200,
                   child: const Center(
                     child: Icon(
@@ -145,9 +116,7 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
                       color: Colors.white,
                     ),
                   ),
-                );
-              },
-            ),
+                ),
             const DecoratedBox(
               decoration: BoxDecoration(
                 gradient: LinearGradient(
@@ -193,12 +162,12 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
           _buildSummaryItem(
             icon: Icons.access_time,
             title: 'Time',
-            value: widget.event.time.format(context),
+            value: widget.event.startTime.format(context),
           ),
           _buildSummaryItem(
             icon: Icons.people,
             title: 'Guests',
-            value: '${widget.event.guests}',
+            value: '${widget.event.guestRange}',
           ),
         ],
       ),
@@ -274,12 +243,12 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
             children: [
               _buildDetailRow(
                 icon: Icons.location_on,
-                text: widget.event.location,
+                text: widget.event.location.isEmpty ? 'No location added' : widget.event.location,
               ),
               const SizedBox(height: 12),
               _buildDetailRow(
                 icon: Icons.attach_money,
-                text: 'Budget: \$${widget.event.budget.toStringAsFixed(2)}',
+                text: widget.event.budget.isEmpty ? 'No budget set' : 'Budget: \"${widget.event.budget}\"',
               ),
               const SizedBox(height: 16),
               const Text(
@@ -290,7 +259,7 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
               ),
               const SizedBox(height: 8),
               Text(
-                widget.event.description,
+                widget.event.description.isEmpty ? 'No description available' : widget.event.description,
                 style: TextStyle(
                   color: Colors.grey.shade600,
                 ),
@@ -331,11 +300,73 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
   }
 
   Widget _buildTaskSection() {
+  final eventProvider = Provider.of<EventProvider>(context, listen: false);
+
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      const Text(
+        'Event Tasks',
+        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+      ),
+      const SizedBox(height: 12),
+      widget.event.tasks.isNotEmpty
+          ? Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(12),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.withOpacity(0.1),
+                    spreadRadius: 2,
+                    blurRadius: 5,
+                    offset: const Offset(0, 3),
+                  ),
+                ],
+              ),
+              child: ListView.separated(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: widget.event.tasks.length,
+                separatorBuilder: (context, index) => const Divider(height: 1),
+                itemBuilder: (context, index) {
+                  final task = widget.event.tasks[index];
+                  return CheckboxListTile(
+                    title: Text(
+                      task.title,
+                      style: TextStyle(
+                        decoration: task.completed ? TextDecoration.lineThrough : TextDecoration.none,
+                        color: task.completed ? Colors.grey : Colors.black,
+                      ),
+                    ),
+                    value: task.completed,
+                    onChanged: (bool? value) async {
+                      setState(() {
+                        task.completed = value ?? false;
+                      });
+
+                      // Save to Firestore via EventProvider
+                      await eventProvider.updateTaskStatus(widget.event.id, task);
+                    },
+                    activeColor: Colors.amber,
+                    checkColor: Colors.white,
+                  );
+                },
+              ),
+            )
+          : Text(
+            'No tasks assigned yet.',
+            style: TextStyle(color: Colors.grey),
+          ),],
+  );
+}
+
+  Widget _buildParticipantsList() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const Text(
-          'Event Tasks',
+          'Participants',
           style: TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.bold,
@@ -343,6 +374,7 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
         ),
         const SizedBox(height: 12),
         Container(
+          padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(12),
@@ -355,131 +387,34 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
               ),
             ],
           ),
-          child: ListView.separated(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            itemCount: widget.event.tasks.length,
-            separatorBuilder: (context, index) => const Divider(height: 1),
-            itemBuilder: (context, index) {
-              final task = widget.event.tasks[index];
-              return CheckboxListTile(
-                title: Text(
-                  task.title,
-                  style: TextStyle(
-                    decoration: task.completed 
-                      ? TextDecoration.lineThrough 
-                      : TextDecoration.none,
+          child: widget.event.participants.isNotEmpty
+              ? Column(
+                  children: widget.event.participants
+                      .map((participant) => ListTile(
+                            leading: const Icon(Icons.person, color: Colors.amber),
+                            title: Text(participant),
+                          ))
+                      .toList(),
+                )
+              : const Center(
+                  child: Text(
+                    'No participants yet.',
+                    style: TextStyle(color: Colors.grey),
                   ),
                 ),
-                value: task.completed,
-                onChanged: (bool? value) {
-                  setState(() {
-                    task.completed = value ?? false;
-                  });
-                },
-                activeColor: Colors.amber,
-                checkColor: Colors.white,
-              );
-            },
-          ),
         ),
       ],
     );
   }
 
-  Widget _buildGuestList() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text(
-          'Guest List',
-          style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        const SizedBox(height: 12),
-        Container(
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(12),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.grey.withOpacity(0.1),
-                spreadRadius: 2,
-                blurRadius: 5,
-                offset: const Offset(0, 3),
-              ),
-            ],
-          ),
-          child: ListView.separated(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            itemCount: widget.event.invitedGuests.length,
-            separatorBuilder: (context, index) => const Divider(height: 1),
-            itemBuilder: (context, index) {
-              final guest = widget.event.invitedGuests[index];
-              return ListTile(
-                title: Text(guest.name),
-                trailing: _buildGuestStatusChip(guest.status),
-              );
-            },
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildGuestStatusChip(GuestStatus status) {
-    Color chipColor;
-    String chipText;
-
-    switch (status) {
-      case GuestStatus.confirmed:
-        chipColor = Colors.green.shade100;
-        chipText = 'Confirmed';
-        break;
-      case GuestStatus.pending:
-        chipColor = Colors.amber.shade100;
-        chipText = 'Pending';
-        break;
-      case GuestStatus.declined:
-        chipColor = Colors.red.shade100;
-        chipText = 'Declined';
-        break;
-    }
-
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-      decoration: BoxDecoration(
-        color: chipColor,
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: Text(
-        chipText,
-        style: TextStyle(
-          color: chipColor == Colors.green.shade100 
-            ? Colors.green.shade700 
-            : chipColor == Colors.amber.shade100 
-              ? Colors.amber.shade700 
-              : Colors.red.shade700,
-          fontSize: 12,
-          fontWeight: FontWeight.w600,
-        ),
-      ),
-    );
-  }
 
   FloatingActionButton _buildFloatingActionButton() {
-    return FloatingActionButton(
-      onPressed: () {
-        // Add event editing functionality
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Edit Event')),
-        );
-      },
-      backgroundColor: Colors.amber,
-      child: const Icon(Icons.edit, color: Colors.white),
-    );
-  }
+  return FloatingActionButton(
+    onPressed: () {
+      context.go('/edit_event/${widget.event.id}');
+    },
+    backgroundColor: Colors.amber,
+    child: const Icon(Icons.edit, color: Colors.white),
+  );
+}
 }
