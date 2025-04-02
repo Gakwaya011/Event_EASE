@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'user_model.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthProvider with ChangeNotifier {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -29,12 +30,25 @@ class AuthProvider with ChangeNotifier {
 
   // Initialize user data after Firebase is ready
   Future<void> _initializeUser() async {
-    _user = _auth.currentUser;
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    bool isLoggedIn = prefs.getBool('isLoggedIn') ?? false;
+
+    if (kIsWeb) {
+      await _auth.setPersistence(Persistence.LOCAL); // ✅ Ensures persistence on web
+    }
+
+    _user = isLoggedIn ? _auth.currentUser : null;
     if (_user != null) {
       await _fetchUserData(_user!.uid);
     }
     _isLoading = false; // Set loading to false once user data is fetched
     notifyListeners();
+  }
+
+  // ✅ Save login state
+  Future<void> _setLoginState(bool isLoggedIn) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('isLoggedIn', isLoggedIn);
   }
 
   // Sign in with Email & Password
@@ -47,6 +61,7 @@ class AuthProvider with ChangeNotifier {
         // Fetch user data and store it in the provider
         await _fetchUserData(_user!.uid);
       }
+      await _setLoginState(true); // Save login state
 
       notifyListeners();
       return true;
@@ -75,6 +90,7 @@ class AuthProvider with ChangeNotifier {
       );
 
       _user = userCredential.user;
+      await _setLoginState(true); // Save login state
 
       if (_user != null) {
         // Save user data in Firestore
@@ -147,6 +163,9 @@ class AuthProvider with ChangeNotifier {
     await _auth.signOut();
     _user = null;
     _userData = null;  // Clear the user data as well
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('isLoggedIn', false); // Clear login state
     notifyListeners();
   }
 

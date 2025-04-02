@@ -10,6 +10,7 @@ import 'package:flutter/foundation.dart' show kIsWeb;
 import 'core/providers/auth_provider.dart' as local_auth; 
 import 'package:firebase_auth/firebase_auth.dart';
 
+
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   print("Handling background message: ${message.messageId}");
 }
