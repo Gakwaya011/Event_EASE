@@ -46,3 +46,21 @@ flutter pub get
 ## Run the App:
 
 flutter run
+
+## Documentation
+
+1. Documentation
+
+https://docs.google.com/document/d/1r2i4J6wDXMWRdLLHbcyzV48Ay_X0U8XEVUk2T6_UglA/edit?usp=sharing
+
+2. Presenattion Slides
+
+https://www.canva.com/design/DAGiuSuE0tw/SPP-1PWkBgT5R_jUS3R6DA/edit?utm_content=DAGiuSuE0tw&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton
+
+3. Github Repository
+
+https://github.com/Gakwaya011/Event_EASE
+
+4. Figma Designs
+
+https://www.figma.com/design/XH573ASsJSvHLiKmWUaV7i/Ease?node-id=0-1&t=iGVP3bQOBfhqnfbF-1
