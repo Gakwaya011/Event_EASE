@@ -1,15 +1,16 @@
 # Event_EASE
 
 ## Overview
-EventEase is an AI-powered platform designed to simplify event planning for individuals and small-scale organizers. With a user-friendly interface built using Flutter for the frontend and Firebase for the backend, EventEase streamlines vendor management, budget tracking, and collaboration to create memorable community events.
+Event Ease is a comprehensive event planning platform designed to simplify the process for individuals and small-scale organizers. With a user-friendly interface built using Flutter for the frontend and Firebase for the backend, Event Ease streamlines vendor coordination, budget tracking, and collaboration—empowering users to create stress-free and well-organized events.
 
 ## Features
-1. AI-Powered Vendor Matching: Connects users with local vendors tailored to their needs.
-2. Budget Management: Tools for real-time expense tracking and budget adherence.
-3. Timeline and Task Management: Create timelines, assign tasks, and set reminders.
-4. Collaboration Tools: Seamless communication among team members and vendors.
-5. Resource Library: Access to templates and guides for various events.
-6. Feedback System: Rate and review vendors for informed decision-making.
+1. Task & Timeline Management – Assign tasks, set deadlines, and keep track of progress.
+2. Budget Tracking – Monitor expenses, allocate funds, and stay within budget.
+3. Seamless Collaboration – Real-time communication and task delegation among team members and vendors.
+4. Customizable Checklists – Pre-built templates to ensure no detail is overlooked.
+5. Event Dashboard – Get a quick overview of upcoming events, schedules, and important updates.
+6. Secure Data Management – Ensure reliable storage and access control with Firebase.
+
 
 ## Technologies Used
 
@@ -20,23 +21,24 @@ Backend: Firebase
 ## Getting Started
 
 ### Prerequisites
-Flutter SDK
+#### Before running the project, make sure you have:
+**Flutter SDK** installed
 
-Firebase account
+A **Firebase account** with a configured project
 
 ## Installation
 1. Clone the Repository:
-
+```
 git clone https://github.com/yourusername/eventease.git
-
+```
 2. Navigate to the Project Directory
-
+```
 cd eventease
-
+```
 3. Install Dependencies:
-
+```
 flutter pub get
-
+```
 ## Configure Firebase:
 1. Create a new Firebase project.
 2. Add your app to the project.
@@ -50,17 +52,10 @@ flutter run
 ## Documentation
 
 1. Documentation
-
+```
 https://docs.google.com/document/d/1r2i4J6wDXMWRdLLHbcyzV48Ay_X0U8XEVUk2T6_UglA/edit?usp=sharing
-
-2. Presenattion Slides
-
-https://www.canva.com/design/DAGiuSuE0tw/SPP-1PWkBgT5R_jUS3R6DA/edit?utm_content=DAGiuSuE0tw&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton
-
-3. Github Repository
-
-https://github.com/Gakwaya011/Event_EASE
-
-4. Figma Designs
-
+```
+2. Figma Designs
+```
 https://www.figma.com/design/XH573ASsJSvHLiKmWUaV7i/Ease?node-id=0-1&t=iGVP3bQOBfhqnfbF-1
+```
