@@ -49,7 +49,7 @@ dependencies {
 
   // Firebase Auth SDK (add this if you plan to use Firebase Authentication)
     implementation("com.google.firebase:firebase-auth")
-    implementation 'com.google.firebase:firebase-messaging:30.3.1' // Use the latest version
+    implementation("com.google.firebase:firebase-messaging:30.3.1")
     
 
 
