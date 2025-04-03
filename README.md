@@ -14,17 +14,18 @@ Event Ease is a comprehensive event planning platform designed to simplify the p
 
 ## Technologies Used
 
-Frontend: Flutter
+Frontend: **Flutter**
 
-Backend: Firebase
+Backend: **Firebase**
 
 ## Getting Started
 
 ### Prerequisites
 #### Before running the project, make sure you have:
-**Flutter SDK** installed
+--
+- **Flutter SDK** installed
 
-A **Firebase account** with a configured project
+- A **Firebase account** with a configured project
 
 ## Installation
 1. Clone the Repository:
@@ -47,7 +48,7 @@ flutter pub get
 
 ## Run the App:
 
-flutter run
+**flutter run**
 
 ## Documentation
 
