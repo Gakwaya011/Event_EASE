@@ -22,7 +22,6 @@ Backend: **Firebase**
 
 ### Prerequisites
 #### Before running the project, make sure you have:
---
 - **Flutter SDK** installed
 
 - A **Firebase account** with a configured project
@@ -48,7 +47,9 @@ flutter pub get
 
 ## Run the App:
 
+```
 **flutter run**
+```
 
 ## Documentation
 
