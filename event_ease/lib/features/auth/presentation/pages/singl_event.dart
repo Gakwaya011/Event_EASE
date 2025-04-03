@@ -167,7 +167,7 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
           _buildSummaryItem(
             icon: Icons.people,
             title: 'Guests',
-            value: '${widget.event.guestRange}',
+            value: widget.event.guestRange,
           ),
         ],
       ),
@@ -248,7 +248,7 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
               const SizedBox(height: 12),
               _buildDetailRow(
                 icon: Icons.attach_money,
-                text: widget.event.budget.isEmpty ? 'No budget set' : 'Budget: \"${widget.event.budget}\"',
+                text: widget.event.budget.isEmpty ? 'No budget set' : 'Budget: "${widget.event.budget}"',
               ),
               const SizedBox(height: 16),
               const Text(

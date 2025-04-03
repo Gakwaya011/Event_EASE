@@ -3,6 +3,8 @@ import '../../../../core/providers/auth_provider.dart';
 import 'package:go_router/go_router.dart';
 
 class ResetPasswordScreen extends StatefulWidget {
+  const ResetPasswordScreen({super.key});
+
   @override
   _ResetPasswordScreenState createState() => _ResetPasswordScreenState();
 }

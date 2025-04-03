@@ -5,7 +5,6 @@ import 'package:event_ease/core/providers/auth_provider.dart';
 
 // Importing the UI widgets
 import '../widgets/dashboard/appbar.dart';
-import '../widgets/dashboard/search_bar.dart';
 import '../widgets/bottom_bar.dart';
 import '../widgets/dashboard/event_card.dart';
 import '../widgets/dashboard/template_card.dart';

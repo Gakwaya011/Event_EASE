@@ -8,7 +8,7 @@ import 'package:event_ease/features/auth/presentation/widgets/bottom_bar.dart';
 import '../widgets/dashboard/map_categories.dart';
 
 class AllEventsPage extends StatefulWidget {
-  const AllEventsPage({Key? key}) : super(key: key);
+  const AllEventsPage({super.key});
 
   @override
   _AllEventsPageState createState() => _AllEventsPageState();

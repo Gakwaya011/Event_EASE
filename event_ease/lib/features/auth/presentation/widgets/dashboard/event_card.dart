@@ -163,7 +163,7 @@ class _MyEventsSectionState extends State<MyEventsSection> {
             ),
 
             // Three-Dot Menu
-            Container(
+            SizedBox(
               width: 30,
               child: PopupMenuButton<String>(
                 onSelected: (value) {
@@ -196,7 +196,7 @@ class _MyEventsSectionState extends State<MyEventsSection> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return Container(
+        return SizedBox(
           width: 20,
           height: 20,
           child: AlertDialog(

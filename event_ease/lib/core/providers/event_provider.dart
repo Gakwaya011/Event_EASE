@@ -73,7 +73,7 @@ class EventProvider with ChangeNotifier {
   }
 
 
-  List<EventModel> _events = [];
+  final List<EventModel> _events = [];
 
   List<EventModel> get events => _events;
 

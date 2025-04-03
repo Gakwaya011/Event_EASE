@@ -76,7 +76,7 @@ Widget _buildTemplateCard(
     required Color color,
   }) {
     return GestureDetector(
-      onTap: () => context.push('/single_event'),
+      onTap: () => context.push('/create_event'),
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
