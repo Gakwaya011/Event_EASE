@@ -32,3 +32,17 @@ git clone https://github.com/yourusername/eventease.git
 2. Navigate to the Project Directory
 
 cd eventease
+
+3. Install Dependencies:
+
+flutter pub get
+
+## Configure Firebase:
+1. Create a new Firebase project.
+2. Add your app to the project.
+3 .Download the google-services.json file and place it in the android/app directory.
+4. Follow Firebase setup instructions for Flutter.
+
+## Run the App:
+
+flutter run
